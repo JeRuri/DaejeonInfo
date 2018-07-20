@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="120dp"
+    android:background="@drawable/back"
+    android:layerType="software">
+    <Button
+        android:id="@+id/btn"
+        android:background="@color/none"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        />
+
+    <android.support.v7.widget.AppCompatImageView
+        android:id="@+id/img"
+        tools:src="@drawable/festival2"
+        android:paddingTop="10dp"
+        android:paddingRight="30dp"
+        android:paddingBottom="35dp"
+        android:paddingLeft="30dp"
+        android:adjustViewBounds="true"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <TextView
+        android:id="@+id/txt"
+        android:gravity="bottom|center_horizontal"
+        tools:text="문화"
+        android:textSize="20dp"
+        android:textColor="#000"
+        android:textStyle="bold"
+        android:paddingBottom="10dp"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+</RelativeLayout>

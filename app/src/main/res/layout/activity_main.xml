@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="#ffffff"
+    tools:context=".MainActivity">
+
+    <android.support.v4.view.ViewPager
+        android:id="@+id/viewPager"
+        android:layout_width="match_parent"
+        android:layout_height="150dp" />
+
+    <com.pm10.library.CircleIndicator
+        android:id="@+id/circle_indicator"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        app:p_gap="4dp"
+        app:p_radius="4dp"
+        app:p_strokeWidth="1dp"
+        app:p_defaultColor="@color/white"
+        app:p_selectedColor="@color/gray"
+        app:p_strokeColor="@color/gray"/>
+
+    <TextView
+        android:background="@drawable/back"
+        android:paddingTop="10dp"
+        android:textStyle="bold"
+        android:id="@+id/tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ellipsize="marquee"
+        android:marqueeRepeatLimit="marquee_forever"
+        android:paddingBottom="10dp"
+        android:singleLine="true"
+        android:text="대전시에 관련된 뉴스를 전달해주는 어플입니다. 상단 이미지를 클릭하면 해당페이지로 이동합니다~"
+        android:textSize="14sp" />
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/recyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        tools:layoutManager="android.support.v7.widget.GridLayoutManager"
+        tools:listitem="@layout/activity_main_item"
+        tools:spanCount="3">
+
+    </android.support.v7.widget.RecyclerView>
+
+</LinearLayout>

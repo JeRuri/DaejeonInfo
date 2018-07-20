@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="120dp"
+    android:background="@drawable/back">
+
+    <android.support.v7.widget.AppCompatImageView
+        android:id="@+id/img1"
+        tools:src="@drawable/festival"
+        android:layout_width="150dp"
+        android:layout_height="match_parent"
+        android:adjustViewBounds="true"/>
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+        <TextView
+            android:id="@+id/culTitle"
+            android:text="유성온천축제"
+            android:textSize="20sp"
+            android:textColor="#000"
+            android:paddingTop="10dp"
+            android:paddingLeft="14dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+        <TextView
+            android:id="@+id/culDate"
+            android:text="2018. 5. 11(금)~5. 13(일)"
+            android:paddingLeft="14dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+         <TextView
+            android:id="@+id/culLoc"
+            android:text="온천로 일원, 계룡스파텔, 갑천변 등"
+            android:paddingLeft="14dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+        </LinearLayout>
+    </LinearLayout>
+</LinearLayout>

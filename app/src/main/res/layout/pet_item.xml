@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:background="@drawable/back"
+    android:layout_height="170dp">
+
+    <android.support.v7.widget.AppCompatImageView
+        android:id="@+id/imgPET"
+        tools:src="@drawable/pic10"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        android:adjustViewBounds="true"/>
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <TextView
+                android:id="@+id/adoptionStatus"
+                tools:text="입양가능"
+                android:textColor="#000"
+                android:paddingTop="10dp"
+                android:paddingLeft="14dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+            <TextView
+                android:id="@+id/classification"
+                tools:text="고양이"
+                android:paddingLeft="14dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+            <TextView
+                android:id="@+id/gender"
+                tools:text="암컷"
+                android:paddingLeft="14dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+            <TextView
+                android:id="@+id/age"
+                tools:text="6개월"
+                android:paddingLeft="14dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+            <TextView
+                android:id="@+id/date"
+                tools:text="2018-05-02"
+                android:paddingLeft="14dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+            <TextView
+                android:id="@+id/location"
+                tools:text="궁동"
+                android:paddingLeft="14dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+            <TextView
+                android:id="@+id/memo"
+                tools:text="꼬리가 잘림"
+                android:paddingLeft="14dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+        </LinearLayout>
+    </LinearLayout>
+</LinearLayout>

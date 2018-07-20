@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:background="@drawable/back"
+    android:id="@+id/newsClick"
+    android:layout_height="250dp">
+
+    <android.support.v7.widget.AppCompatImageView
+        android:id="@+id/img2"
+        tools:src="@drawable/festival"
+        android:layout_width="180dp"
+        android:layout_height="180dp"
+        android:adjustViewBounds="true"/>
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <TextView
+                android:id="@+id/newsTitle"
+                android:text="도시양봉 활성화 사업 추진"
+                android:textSize="17sp"
+                android:textColor="#000"
+                android:paddingTop="10dp"
+                android:paddingLeft="14dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+            <TextView
+                android:id="@+id/newsDate"
+                android:text="2018-05-02"
+                android:paddingLeft="14dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+            <TextView
+                android:id="@+id/newsContent"
+                android:text="우리지역의 양봉산업 육성을 위해 다양한 사업을 추진하고 있는 대전시가 도시양봉장과 시민체험양봉장 운영을 시작했습니다.    "
+                android:paddingLeft="14dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+        </LinearLayout>
+    </LinearLayout>
+</LinearLayout>
