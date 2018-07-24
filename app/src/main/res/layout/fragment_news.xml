@@ -9,7 +9,7 @@
         android:id="@+id/recyclerView2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        tools:layoutManager="android.support.v7.widget.GridLayoutManager"
+        tools:layoutManager="android.support.v7.widget.LinearLayoutManager"
         tools:listitem="@layout/news_item" >
     </android.support.v7.widget.RecyclerView>
 

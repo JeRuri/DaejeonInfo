@@ -18,7 +18,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import android.widget.ImageView;
-import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -29,7 +29,6 @@ import com.bumptech.glide.Glide;
 import org.json.JSONArray;
 
 import org.json.JSONObject;
-
 
 
 import java.util.ArrayList;
@@ -49,36 +48,47 @@ import static com.abs2432gmail.daejeoninfo.Common.NetworkConstant.NEWS;
 public class NewsFragment extends Fragment {
     private RecyclerView recyclerView;
     private NewsRecyclerViewAdapter adapter;
-    private ArrayList<NewsData> data = new ArrayList<>();
     private Context mContext;
     private String mTAG = "NewsFragment";
+    private ProgressBar progressBar;
     private String REQUEST_URL = NEWS + API_KEY;
 
-    public NewsFragment() {
-    }
+    public NewsFragment() {}
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_news, container, false);
-        String strtext = getArguments().getString("data");
+
         mContext = getActivity();
+
+        progressBar = (ProgressBar) view.findViewById(R.id.progressBar) ;
 
         recyclerView = (RecyclerView) view.findViewById(R.id.recyclerView2);
         recyclerView.setLayoutManager(new LinearLayoutManager(mContext));
-
         adapter = new NewsRecyclerViewAdapter(new ArrayList<NewsData>());
         recyclerView.setAdapter(adapter);
+
+        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+
+                int lastVisibleItemPosition = ((LinearLayoutManager) recyclerView.getLayoutManager()).findLastCompletelyVisibleItemPosition();
+                int itemTotalCount = recyclerView.getAdapter().getItemCount() - 1;
+                if (lastVisibleItemPosition == itemTotalCount) {
+                    Toast.makeText(mContext, "마지막입니다.", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
 
         new AsyncTaskGetNewsData().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
         return view;
     }
 
+
     public class NewsData {
         public String imgNEWS, title, date, content, newsUri;
-
-        public NewsData() {
-        }
 
         public NewsData(String imgNEWS, String title, String date, String content, String newsUri) {
             this.imgNEWS = imgNEWS;
@@ -90,14 +100,14 @@ public class NewsFragment extends Fragment {
     }
 
     private class NewsRecyclerViewAdapter extends RecyclerView.Adapter<NewsRecyclerViewAdapter.ViewHolder> {
-        private ArrayList<NewsData> newsRecyclerViewItemDatas;
+        private ArrayList<NewsData> datas;
 
-        public NewsRecyclerViewAdapter(ArrayList<NewsData> data) {
-            newsRecyclerViewItemDatas = data;
+        public NewsRecyclerViewAdapter(ArrayList<NewsData> datas) {
+           this.datas = datas;
         }
 
         public class ViewHolder extends RecyclerView.ViewHolder {
-            NewsData newsRecyclerViewItemData;
+            NewsData recycleData;
             ImageView imgNEWS;
             TextView textView1, textView2, textView3;
 
@@ -110,11 +120,11 @@ public class NewsFragment extends Fragment {
             }
 
             public void setListData(NewsData data) {
-                this.newsRecyclerViewItemData = data;
-                Glide.with(mContext).load(newsRecyclerViewItemData.imgNEWS).into(imgNEWS);
-                textView1.setText(newsRecyclerViewItemData.title);
-                textView2.setText(newsRecyclerViewItemData.date);
-                textView3.setText(newsRecyclerViewItemData.content);
+                this.recycleData = data;
+                Glide.with(mContext).load(recycleData.imgNEWS).into(imgNEWS);
+                textView1.setText(recycleData.title);
+                textView2.setText(recycleData.date);
+                textView3.setText(recycleData.content);
             }
         }
 
@@ -127,7 +137,7 @@ public class NewsFragment extends Fragment {
                 @Override
                 public void onClick(View view) {
                     int itemPosition = recyclerView.getChildAdapterPosition(view);
-                    NewsData item = newsRecyclerViewItemDatas.get(itemPosition);
+                    NewsData item = datas.get(itemPosition);
                     Toast.makeText(mContext,"해당페이지로 이동합니다", Toast.LENGTH_LONG ).show();
                     Uri uri = Uri.parse(item.newsUri);
                     Intent intent = new Intent(Intent.ACTION_VIEW,uri);
@@ -140,17 +150,17 @@ public class NewsFragment extends Fragment {
         }
 
         @Override
-        public void onBindViewHolder(@NonNull NewsRecyclerViewAdapter.ViewHolder holder, int position) {
-            holder.setListData(newsRecyclerViewItemDatas.get(position));
+        public void onBindViewHolder(@NonNull NewsRecyclerViewAdapter.ViewHolder viewHolder, int position) {
+            viewHolder.setListData(datas.get(position));
         }
 
         @Override
         public int getItemCount() {
-            return newsRecyclerViewItemDatas.size();
+            return datas.size();
         }
 
-        public void add(NewsData newsRecyclerViewItemData) {
-            newsRecyclerViewItemDatas.add(newsRecyclerViewItemData);
+        public void add(NewsData recycleData) {
+            datas.add(recycleData);
             notifyDataSetChanged();
         }
     }
@@ -189,7 +199,7 @@ public class NewsFragment extends Fragment {
         protected ArrayList<NewsData> doInBackground(Void... voids) {
             Boolean flag = null;
             String responseBody = "false";
-            ArrayList<NewsData> newsDatas = new ArrayList<>();
+            ArrayList<NewsData> datas = new ArrayList<>();
             MediaType jpegType = MediaType.parse("image/jpeg");
             MediaType pngType = MediaType.parse("image/png");
             try {
@@ -243,14 +253,14 @@ public class NewsFragment extends Fragment {
                     String newsUri = data.getString("detailUrl");
                     NewsData newsData = new NewsData(imgNEWS,title,date,content,newsUri);
 
-                    newsDatas.add(newsData);
+                    datas.add(newsData);
                 }
 
             } catch (Exception e) {
                 Log.d(mTAG, TaskName + " : " + e.toString());
                 return null;
             }
-            return newsDatas;
+            return datas;
         }
 
         //갱신할 때
@@ -259,4 +269,5 @@ public class NewsFragment extends Fragment {
             super.onProgressUpdate(values);
         }
     }
+
 }
