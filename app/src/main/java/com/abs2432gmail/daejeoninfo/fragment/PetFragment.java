@@ -4,6 +4,7 @@ package com.abs2432gmail.daejeoninfo.fragment;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -15,6 +16,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.ViewFlipper;
 
 import com.abs2432gmail.daejeoninfo.R;
@@ -40,9 +42,10 @@ public class PetFragment extends Fragment {
     private ArrayList<PetRecyclerViewItemData> list = new ArrayList<>();
     private Context mContext;
     private String mTAG = "PetFragment";
+    String queryUrl = PET + API_KEY + "&pageNo=";
+    int page = 1;
 
     public PetFragment() { }
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -65,15 +68,41 @@ public class PetFragment extends Fragment {
         };
         thread.start();
 
+        recyclerView.addOnScrollListener(onScrollListener);
+
         return view;
     }
+
+    RecyclerView.OnScrollListener onScrollListener = new RecyclerView.OnScrollListener() {
+        @Override
+        public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+            super.onScrolled(recyclerView, dx, dy);
+            int lastVisibleItemPosition = ((LinearLayoutManager) recyclerView.getLayoutManager()).findLastCompletelyVisibleItemPosition();
+            int itemTotalCount = recyclerView.getAdapter().getItemCount() - 1;
+            if (lastVisibleItemPosition == itemTotalCount) {
+                Toast.makeText(mContext,"로딩중...",Toast.LENGTH_SHORT).show();
+                page++;
+                Thread thread = new Thread() {
+                    @Override
+                    public void run() {
+                        super.run();
+                        getXmlData();
+                        handler.sendEmptyMessage(0);
+                    }
+                };
+                thread.start();
+            }
+        }
+    };
 
     Handler handler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
-            adapter = new PetFragment.PetRecyclerViewAdapter(list);
-            recyclerView.setAdapter(adapter);
+            for (int i = 0; i < list.size(); i++){
+                adapter.add(list.get(i));
+            }
+            adapter.notifyDataSetChanged();
         }
     };
 
@@ -161,10 +190,10 @@ public class PetFragment extends Fragment {
     String getXmlData () {
         StringBuffer buffer = new StringBuffer();
 
-        String queryUrl = PET + API_KEY;
         PetRecyclerViewItemData petRecyclerViewItemData = null;
+
         try {
-            URL url = new URL(queryUrl);
+            URL url = new URL(queryUrl + page);
             InputStream is = url.openStream();
 
             XmlPullParserFactory factory = XmlPullParserFactory.newInstance();

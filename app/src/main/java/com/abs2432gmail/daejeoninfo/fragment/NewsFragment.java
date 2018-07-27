@@ -50,8 +50,9 @@ public class NewsFragment extends Fragment {
     private NewsRecyclerViewAdapter adapter;
     private Context mContext;
     private String mTAG = "NewsFragment";
-    private ProgressBar progressBar;
     private String REQUEST_URL = NEWS + API_KEY;
+    int page = 1;
+    String urlPage = REQUEST_URL + "&pageIndex=";
 
     public NewsFragment() {}
 
@@ -62,30 +63,29 @@ public class NewsFragment extends Fragment {
 
         mContext = getActivity();
 
-        progressBar = (ProgressBar) view.findViewById(R.id.progressBar) ;
-
         recyclerView = (RecyclerView) view.findViewById(R.id.recyclerView2);
         recyclerView.setLayoutManager(new LinearLayoutManager(mContext));
         adapter = new NewsRecyclerViewAdapter(new ArrayList<NewsData>());
         recyclerView.setAdapter(adapter);
 
-        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
-            @Override
-            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                super.onScrolled(recyclerView, dx, dy);
-
-                int lastVisibleItemPosition = ((LinearLayoutManager) recyclerView.getLayoutManager()).findLastCompletelyVisibleItemPosition();
-                int itemTotalCount = recyclerView.getAdapter().getItemCount() - 1;
-                if (lastVisibleItemPosition == itemTotalCount) {
-                    Toast.makeText(mContext, "마지막입니다.", Toast.LENGTH_SHORT).show();
-                }
-            }
-        });
-
+        recyclerView.addOnScrollListener(onScrollListener);
         new AsyncTaskGetNewsData().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
         return view;
     }
 
+    RecyclerView.OnScrollListener onScrollListener = new RecyclerView.OnScrollListener() {
+        @Override
+        public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+            super.onScrolled(recyclerView, dx, dy);
+            int lastVisibleItemPosition = ((LinearLayoutManager) recyclerView.getLayoutManager()).findLastCompletelyVisibleItemPosition();
+            int itemTotalCount = recyclerView.getAdapter().getItemCount() - 1;
+            if (lastVisibleItemPosition == itemTotalCount) {
+                Toast.makeText(mContext,"로딩중...",Toast.LENGTH_SHORT).show();
+                page++;
+                new AsyncTaskGetNewsData().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+            }
+        }
+    };
 
     public class NewsData {
         public String imgNEWS, title, date, content, newsUri;
@@ -190,8 +190,10 @@ public class NewsFragment extends Fragment {
                 return;
             if(newsDatas.size() == 0)
                 return;
-            adapter = new NewsRecyclerViewAdapter(newsDatas);
-            recyclerView.setAdapter(adapter);
+            for (int i = 0; i < newsDatas.size(); i++){
+                adapter.add(newsDatas.get(i));
+            }
+            adapter.notifyDataSetChanged();
         }
 
         //백그라운드
@@ -212,7 +214,7 @@ public class NewsFragment extends Fragment {
                         .build();
 
                 Request request = new Request.Builder()
-                        .url(REQUEST_URL)
+                        .url(urlPage + page)
                         .get()
                         .build();
 
@@ -251,6 +253,7 @@ public class NewsFragment extends Fragment {
                     String date = data.getString("mkDate");
                     String content = data.getString("contentSimple");
                     String newsUri = data.getString("detailUrl");
+
                     NewsData newsData = new NewsData(imgNEWS,title,date,content,newsUri);
 
                     datas.add(newsData);
@@ -269,5 +272,4 @@ public class NewsFragment extends Fragment {
             super.onProgressUpdate(values);
         }
     }
-
 }
