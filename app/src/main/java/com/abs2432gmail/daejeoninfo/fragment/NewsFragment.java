@@ -18,7 +18,6 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import android.widget.ImageView;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -49,9 +48,10 @@ public class NewsFragment extends Fragment {
     private RecyclerView recyclerView;
     private NewsRecyclerViewAdapter adapter;
     private Context mContext;
-    private String mTAG = "NewsFragment";
+    private String TAG = "NewsFragment";
     private String REQUEST_URL = NEWS + API_KEY;
     int page = 1;
+    int totalPage = 2;
     String urlPage = REQUEST_URL + "&pageIndex=";
 
     public NewsFragment() {}
@@ -80,6 +80,10 @@ public class NewsFragment extends Fragment {
             int lastVisibleItemPosition = ((LinearLayoutManager) recyclerView.getLayoutManager()).findLastCompletelyVisibleItemPosition();
             int itemTotalCount = recyclerView.getAdapter().getItemCount() - 1;
             if (lastVisibleItemPosition == itemTotalCount) {
+                if(page==totalPage){
+                    Toast.makeText(mContext,"마지막입니다...",Toast.LENGTH_SHORT).show();
+                    return;
+                }
                 Toast.makeText(mContext,"로딩중...",Toast.LENGTH_SHORT).show();
                 page++;
                 new AsyncTaskGetNewsData().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
@@ -224,25 +228,29 @@ public class NewsFragment extends Fragment {
                 int responseCode = response.code();
                 //200 연결잘됨
 
-                //Log.d(mTAG, "response.code() : " + String.valueOf(responseCode));
+                //Log.d(TAG, "response.code() : " + String.valueOf(responseCode));
                 if (flag) {
                     responseBody = String.valueOf(response.body().string());
-                    //Log.e(mTAG, "response.message() : " + response.message()); //응답에 대한 메세지(OK)
-                    //Log.e(mTAG, "response.body() : " + responseBody);
-                    //Log.e(mTAG, "flag :" + String.valueOf(flag));
+                    //Log.e(TAG, "response.message() : " + response.message()); //응답에 대한 메세지(OK)
+                    //Log.e(TAG, "response.body() : " + responseBody);
+                    //Log.e(TAG, "flag :" + String.valueOf(flag));
                 }
 
                 if (responseBody.equals("false")) {
-                    Log.d(mTAG, TaskName + " : 서버 연결 실패");
+                    Log.d(TAG, TaskName + " : 서버 연결 실패");
                     return null;
                 }
 
                 JSONObject jsonObject = new JSONObject(responseBody);
+                JSONObject pageInfo = jsonObject.getJSONObject("paginationInfo");
+                totalPage = pageInfo.getInt("totalPageCount");
+
+
                 JSONArray resultList = jsonObject.getJSONArray("resultList");
 
                 int resultSize = resultList.length();
                 if (resultSize == 0) {
-                    Log.d(mTAG, TaskName + " : 정보가 없습니다.");
+                    Log.d(TAG, TaskName + " : 정보가 없습니다.");
                     return null;
                 }
 
@@ -260,7 +268,7 @@ public class NewsFragment extends Fragment {
                 }
 
             } catch (Exception e) {
-                Log.d(mTAG, TaskName + " : " + e.toString());
+                Log.d(TAG, TaskName + " : " + e.toString());
                 return null;
             }
             return datas;

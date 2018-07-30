@@ -2,9 +2,6 @@ package com.abs2432gmail.daejeoninfo.fragment;
 
 
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -15,9 +12,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.ViewFlipper;
 
 import com.abs2432gmail.daejeoninfo.R;
 import com.bumptech.glide.Glide;
@@ -25,11 +22,8 @@ import com.bumptech.glide.Glide;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserFactory;
 
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 
@@ -44,7 +38,8 @@ public class PetFragment extends Fragment {
     private String mTAG = "PetFragment";
     String queryUrl = PET + API_KEY + "&pageNo=";
     int page = 1;
-
+    int totalpage = 2;
+    private MyHandler handler;
     public PetFragment() { }
 
     @Override
@@ -52,6 +47,7 @@ public class PetFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_pet, container, false);
         mContext = getActivity();
+        handler = new MyHandler();
         String strtext = getArguments().getString("data3");
         recyclerView = (RecyclerView) view.findViewById(R.id.recyclerView3);
         recyclerView.setLayoutManager(new LinearLayoutManager(mContext));
@@ -80,7 +76,11 @@ public class PetFragment extends Fragment {
             int lastVisibleItemPosition = ((LinearLayoutManager) recyclerView.getLayoutManager()).findLastCompletelyVisibleItemPosition();
             int itemTotalCount = recyclerView.getAdapter().getItemCount() - 1;
             if (lastVisibleItemPosition == itemTotalCount) {
-                Toast.makeText(mContext,"로딩중...",Toast.LENGTH_SHORT).show();
+                if(page==totalpage){
+                    Toast.makeText(mContext,"마지막입니다...",Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                Toast.makeText(mContext,"찾아주세요...",Toast.LENGTH_SHORT).show();
                 page++;
                 Thread thread = new Thread() {
                     @Override
@@ -94,17 +94,13 @@ public class PetFragment extends Fragment {
             }
         }
     };
-
-    Handler handler = new Handler() {
+    private class MyHandler extends Handler{
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
-            for (int i = 0; i < list.size(); i++){
-                adapter.add(list.get(i));
-            }
             adapter.notifyDataSetChanged();
         }
-    };
+    }
 
     public class PetRecyclerViewItemData {
         public String imgPET, adoptionStatus, classification, gender, date, age, location, memo;
@@ -141,6 +137,7 @@ public class PetFragment extends Fragment {
             ImageView imageView;
             TextView textView1, textView2, textView3, textView4,
                         textView5, textView6, textView7;
+            LinearLayout lin_expandview;
 
             public ViewHolder(View itemView) {
                 super(itemView);
@@ -152,6 +149,7 @@ public class PetFragment extends Fragment {
                 textView5 = itemView.findViewById(R.id.date);
                 textView6 = itemView.findViewById(R.id.location);
                 textView7 = itemView.findViewById(R.id.memo);
+                lin_expandview = itemView.findViewById(R.id.lin_expandview);
             }
 
             public void setListData (PetRecyclerViewItemData data) {
@@ -176,14 +174,23 @@ public class PetFragment extends Fragment {
             return viewHolder;
         }
 
-        public void onBindViewHolder (PetRecyclerViewAdapter.ViewHolder holder, int position){
+        public void onBindViewHolder (final PetRecyclerViewAdapter.ViewHolder holder, int position){
             holder.setListData(petRecyclerViewItemDatas.get(position));
+            holder.itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if(holder.lin_expandview.getVisibility() == View.GONE){
+                        holder.lin_expandview.setVisibility(View.VISIBLE);
+                    }else{
+                        holder.lin_expandview.setVisibility(View.GONE);
+                    }
+                }
+            });
         }
 
         public int getItemCount() { return petRecyclerViewItemDatas.size();}
         public void add (PetRecyclerViewItemData petRecyclerViewItemData){
             petRecyclerViewItemDatas.add(petRecyclerViewItemData);
-            notifyDataSetChanged();
         }
     }
 
@@ -312,6 +319,11 @@ public class PetFragment extends Fragment {
                             buffer.append(xpp.getText());
                             buffer.append("\n");
                             petRecyclerViewItemData.memo = "특이사항 : "+xpp.getText().toString();
+                        }else if(tag.equals("totalCount")){
+                            xpp.next();
+                            buffer.append(xpp.getText());
+                            buffer.append("\n");
+                            totalpage = Integer.parseInt(xpp.getText().toString())/10 + 1;
                         }
                         break;
 
@@ -321,7 +333,7 @@ public class PetFragment extends Fragment {
                     case XmlPullParser.END_TAG:
                         tag = xpp.getName();
                         if(tag.equals("item")) {
-                            list.add(petRecyclerViewItemData);
+                            adapter.add(petRecyclerViewItemData);
                         }
                         break;
                 }
