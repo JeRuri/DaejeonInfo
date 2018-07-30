@@ -11,13 +11,14 @@
     <android.support.v4.view.ViewPager
         android:id="@+id/viewPager"
         android:layout_width="match_parent"
-        android:layout_height="150dp" />
+        android:layout_height="150dp"/>
 
     <com.pm10.library.CircleIndicator
         android:id="@+id/circle_indicator"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
+        android:layout_marginBottom="10dp"
         app:p_gap="4dp"
         app:p_radius="4dp"
         app:p_strokeWidth="1dp"

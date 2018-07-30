@@ -18,6 +18,8 @@ import android.widget.Toast;
 
 import com.abs2432gmail.daejeoninfo.R;
 import com.bumptech.glide.Glide;
+import com.transitionseverywhere.ChangeBounds;
+import com.transitionseverywhere.TransitionManager;
 
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserFactory;
@@ -38,7 +40,7 @@ public class PetFragment extends Fragment {
     private String mTAG = "PetFragment";
     String queryUrl = PET + API_KEY + "&pageNo=";
     int page = 1;
-    int totalpage = 2;
+    int totalPage = 2;
     private MyHandler handler;
     public PetFragment() { }
 
@@ -76,7 +78,7 @@ public class PetFragment extends Fragment {
             int lastVisibleItemPosition = ((LinearLayoutManager) recyclerView.getLayoutManager()).findLastCompletelyVisibleItemPosition();
             int itemTotalCount = recyclerView.getAdapter().getItemCount() - 1;
             if (lastVisibleItemPosition == itemTotalCount) {
-                if(page==totalpage){
+                if(page== totalPage){
                     Toast.makeText(mContext,"마지막입니다...",Toast.LENGTH_SHORT).show();
                     return;
                 }
@@ -103,15 +105,14 @@ public class PetFragment extends Fragment {
     }
 
     public class PetRecyclerViewItemData {
-        public String imgPET, adoptionStatus, classification, gender, date, age, location, memo;
+        public String imgPET, adoptionStatus,  gender, date, age, location, memo;
 
         public PetRecyclerViewItemData(){}
         //여기에 데이터 들어감
-        public PetRecyclerViewItemData(String imgPET, String adoptionStatus, String classification, String gender,
+        public PetRecyclerViewItemData(String imgPET, String adoptionStatus, String gender,
                                        String date, String age, String location, String memo){
             this.imgPET = imgPET;
             this.adoptionStatus = adoptionStatus;
-            this.classification = classification;
             this.gender = gender;
             this.date = date;
             this.age = age;
@@ -134,8 +135,8 @@ public class PetFragment extends Fragment {
 
         public class ViewHolder extends RecyclerView.ViewHolder {
             PetRecyclerViewItemData petRecyclerViewItemData;
-            ImageView imageView;
-            TextView textView1, textView2, textView3, textView4,
+            ImageView imageView, expandBtn;
+            TextView textView1, textView3, textView4,
                         textView5, textView6, textView7;
             LinearLayout lin_expandview;
 
@@ -143,13 +144,13 @@ public class PetFragment extends Fragment {
                 super(itemView);
                 imageView = itemView.findViewById(R.id.imgPET);
                 textView1 = itemView.findViewById(R.id.adoptionStatus);
-                textView2 = itemView.findViewById(R.id.classification);
                 textView3 = itemView.findViewById(R.id.gender);
                 textView4 = itemView.findViewById(R.id.age);
                 textView5 = itemView.findViewById(R.id.date);
                 textView6 = itemView.findViewById(R.id.location);
                 textView7 = itemView.findViewById(R.id.memo);
                 lin_expandview = itemView.findViewById(R.id.lin_expandview);
+                expandBtn = itemView.findViewById(R.id.expandBtn);
             }
 
             public void setListData (PetRecyclerViewItemData data) {
@@ -159,7 +160,6 @@ public class PetFragment extends Fragment {
                 //글라이드/context/load 파일경로/into 이미지뷰
                 Glide.with(mContext).load(petRecyclerViewItemData.imgPET).into(imageView);
                 textView1.setText(petRecyclerViewItemData.adoptionStatus);
-                textView2.setText(petRecyclerViewItemData.classification);
                 textView3.setText(petRecyclerViewItemData.gender);
                 textView4.setText(petRecyclerViewItemData.age);
                 textView5.setText(petRecyclerViewItemData.date);
@@ -176,14 +176,29 @@ public class PetFragment extends Fragment {
 
         public void onBindViewHolder (final PetRecyclerViewAdapter.ViewHolder holder, int position){
             holder.setListData(petRecyclerViewItemDatas.get(position));
+
             holder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    if(holder.lin_expandview.getVisibility() == View.GONE){
+                    boolean sholdExpand = holder.lin_expandview.getVisibility() == View.GONE;
+
+                    ChangeBounds transition = new ChangeBounds();
+                    transition.setDuration(125);
+
+                    if(sholdExpand){
                         holder.lin_expandview.setVisibility(View.VISIBLE);
-                    }else{
+                        holder.expandBtn.setRotationX(180);
+                        holder.expandBtn.setPivotX(50);
+                        holder.expandBtn.setPivotY(50);
+                    } else {
                         holder.lin_expandview.setVisibility(View.GONE);
+                        holder.expandBtn.setRotationX(360);
+                        holder.expandBtn.setPivotX(50);
+                        holder.expandBtn.setPivotY(50);
                     }
+
+                    TransitionManager.beginDelayedTransition(recyclerView, transition);
+                    holder.itemView.setActivated(sholdExpand);
                 }
             });
         }
@@ -237,41 +252,27 @@ public class PetFragment extends Fragment {
                             int adoptionStatusCd = Integer.parseInt(strAdoptionStatusCd);
                             switch (adoptionStatusCd){
                                 case 1:
-                                    petRecyclerViewItemData.adoptionStatus = "입양상태 : 공고중";
+                                    petRecyclerViewItemData.adoptionStatus = "공고중";
                                     break;
                                 case 2:
-                                    petRecyclerViewItemData.adoptionStatus = "입양상태 : 입양가능";
+                                    petRecyclerViewItemData.adoptionStatus = "입양가능";
                                     break;
                                 case 3:
-                                    petRecyclerViewItemData.adoptionStatus = "입양상태 : 입양예정";
+                                    petRecyclerViewItemData.adoptionStatus = "입양예정";
                                     break;
                                 case 4:
-                                    petRecyclerViewItemData.adoptionStatus = "입양상태 : 입양완료";
+                                    petRecyclerViewItemData.adoptionStatus = "입양완료";
+                                    break;
+                                case 5:
+                                    petRecyclerViewItemData.adoptionStatus = "자연사";
+                                    break;
+                                case 6:
+                                    petRecyclerViewItemData.adoptionStatus = "안락사";
                                     break;
                                 case 7:
-                                    petRecyclerViewItemData.adoptionStatus = "입양상태 : 주인반환";
+                                    petRecyclerViewItemData.adoptionStatus = "주인반환";
                                     break;
                                 default:
-                                    break;
-                            }
-                        }
-
-                        else if(tag.equals("classification")) {
-                            //1:강아지 , 2:고양이, 3:기타동물
-                            xpp.next();
-                            buffer.append(xpp.getText());
-                            buffer.append("\n");
-                            String strClassification = xpp.getText();
-                            int classification = Integer.parseInt(strClassification);
-                            switch (classification){
-                                case 1:
-                                    petRecyclerViewItemData.classification = "강아지";
-                                    break;
-                                case 2:
-                                    petRecyclerViewItemData.classification = "고양이";
-                                    break;
-                                case 3:
-                                    petRecyclerViewItemData.classification = "기타동물";
                                     break;
                             }
                         }
@@ -318,12 +319,12 @@ public class PetFragment extends Fragment {
                             xpp.next();
                             buffer.append(xpp.getText());
                             buffer.append("\n");
-                            petRecyclerViewItemData.memo = "특이사항 : "+xpp.getText().toString();
+                            petRecyclerViewItemData.memo = xpp.getText().toString();
                         }else if(tag.equals("totalCount")){
                             xpp.next();
                             buffer.append(xpp.getText());
                             buffer.append("\n");
-                            totalpage = Integer.parseInt(xpp.getText().toString())/10 + 1;
+                            totalPage = Integer.parseInt(xpp.getText().toString())/10 + 1;
                         }
                         break;
 
