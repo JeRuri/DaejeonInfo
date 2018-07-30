@@ -11,7 +11,6 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.abs2432gmail.daejeoninfo.R;
@@ -23,6 +22,8 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.util.ArrayList;
+
+import de.hdodenhof.circleimageview.CircleImageView;
 
 import static com.abs2432gmail.daejeoninfo.Common.NetworkConstant.API_KEY;
 import static com.abs2432gmail.daejeoninfo.Common.NetworkConstant.CULTURE;
@@ -99,12 +100,12 @@ public class CultureFragment extends Fragment {
 
         public class ViewHolder extends RecyclerView.ViewHolder {
             CulRecyclerViewItemData culRecyclerViewItemData;
-            ImageView imageView;
+            CircleImageView circleImageView;
             TextView textView1, textView2, textView3;
 
             public ViewHolder(View itemView) {
                 super(itemView);
-                imageView = itemView.findViewById(R.id.img1);
+                circleImageView = itemView.findViewById(R.id.img1);
                 textView1 = itemView.findViewById(R.id.culTitle);
                 textView2 = itemView.findViewById(R.id.culDate);
                 textView3 = itemView.findViewById(R.id.culLoc);
@@ -112,7 +113,7 @@ public class CultureFragment extends Fragment {
 
             public void setListData(CulRecyclerViewItemData data) {
                 this.culRecyclerViewItemData = data;
-                imageView.setImageResource(R.drawable.festival);
+                circleImageView.setImageResource(R.drawable.festival);
                 textView1.setText(culRecyclerViewItemData.text1);
                 textView2.setText(culRecyclerViewItemData.text2);
                 textView3.setText(culRecyclerViewItemData.text3);

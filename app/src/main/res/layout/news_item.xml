@@ -1,48 +1,41 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:orientation="horizontal"
-    android:layout_width="match_parent"
-    android:background="@drawable/back"
     android:id="@+id/newsClick"
-    android:layout_height="200dp">
+    android:layout_width="330dp"
+    android:layout_height="300dp"
+    android:layout_marginBottom="20dp"
+    android:layout_marginLeft="15dp"
+    android:layout_marginTop="20dp"
+    android:background="@drawable/border"
+    android:elevation="8dp"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/newsTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="10dp"
+        android:paddingLeft="14dp"
+        android:text="도시양봉 활성화 사업 추진"
+        android:textColor="#000"
+        android:textSize="17sp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/newsDate"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingLeft="14dp"
+        android:paddingBottom="5dp"
+        android:text="2018-05-02" />
 
     <android.support.v7.widget.AppCompatImageView
         android:id="@+id/img2"
-        tools:src="@drawable/festival"
-        android:layout_width="150dp"
-        android:layout_height="150dp"
-        android:adjustViewBounds="true"/>
+        android:layout_width="330dp"
+        android:layout_gravity="center"
+        android:layout_height="230dp"
+        android:background="@drawable/border"
+        tools:src="@drawable/festival" />
 
-    <LinearLayout
-        android:orientation="horizontal"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-        <LinearLayout
-            android:orientation="vertical"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-            <TextView
-                android:id="@+id/newsTitle"
-                android:text="도시양봉 활성화 사업 추진"
-                android:textSize="17sp"
-                android:textColor="#000"
-                android:paddingTop="22dp"
-                android:paddingLeft="14dp"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
-            <TextView
-                android:id="@+id/newsDate"
-                android:text="2018-05-02"
-                android:paddingLeft="14dp"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
-            <TextView
-                android:id="@+id/newsContent"
-                android:text="우리지역의 양봉산업 육성을 위해 다양한 사업을 추진하고 있는 대전시가 도시양봉장과 시민체험양봉장 운영을 시작했습니다.    "
-                android:paddingLeft="14dp"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
-        </LinearLayout>
-    </LinearLayout>
 </LinearLayout>

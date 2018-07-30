@@ -92,13 +92,12 @@ public class NewsFragment extends Fragment {
     };
 
     public class NewsData {
-        public String imgNEWS, title, date, content, newsUri;
+        public String imgNEWS, title, date, newsUri;
 
-        public NewsData(String imgNEWS, String title, String date, String content, String newsUri) {
+        public NewsData(String imgNEWS, String title, String date, String newsUri) {
             this.imgNEWS = imgNEWS;
             this.title = title;
             this.date = date;
-            this.content = content;
             this.newsUri = newsUri;
         }
     }
@@ -113,14 +112,13 @@ public class NewsFragment extends Fragment {
         public class ViewHolder extends RecyclerView.ViewHolder {
             NewsData recycleData;
             ImageView imgNEWS;
-            TextView textView1, textView2, textView3;
+            TextView textView1, textView2;
 
             public ViewHolder(View itemView) {
                 super(itemView);
                 imgNEWS = itemView.findViewById(R.id.img2);
                 textView1 = itemView.findViewById(R.id.newsTitle);
                 textView2 = itemView.findViewById(R.id.newsDate);
-                textView3 = itemView.findViewById(R.id.newsContent);
             }
 
             public void setListData(NewsData data) {
@@ -128,7 +126,6 @@ public class NewsFragment extends Fragment {
                 Glide.with(mContext).load(recycleData.imgNEWS).into(imgNEWS);
                 textView1.setText(recycleData.title);
                 textView2.setText(recycleData.date);
-                textView3.setText(recycleData.content);
             }
         }
 
@@ -259,10 +256,9 @@ public class NewsFragment extends Fragment {
                     String imgNEWS = data.getString("thumnailPath");
                     String title = data.getString("title");
                     String date = data.getString("mkDate");
-                    String content = data.getString("contentSimple");
                     String newsUri = data.getString("detailUrl");
 
-                    NewsData newsData = new NewsData(imgNEWS,title,date,content,newsUri);
+                    NewsData newsData = new NewsData(imgNEWS,title,date,newsUri);
 
                     datas.add(newsData);
                 }
