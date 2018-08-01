@@ -1,5 +1,4 @@
 apply plugin: 'com.android.application'
-
 android {
     compileSdkVersion 27
     defaultConfig {
@@ -38,4 +37,7 @@ android {
         implementation 'com.andkulikov:transitionseverywhere:1.8.0'
         implementation 'de.hdodenhof:circleimageview:2.0.0'
     }
+}
+dependencies {
+    implementation 'com.android.support:support-v4:27.1.1'
 }

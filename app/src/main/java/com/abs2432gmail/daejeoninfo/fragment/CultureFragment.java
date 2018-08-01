@@ -6,6 +6,9 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
+import android.support.v4.content.res.ResourcesCompat;
+import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -13,6 +16,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.abs2432gmail.daejeoninfo.CultureActivity;
 import com.abs2432gmail.daejeoninfo.R;
 
 import org.xmlpull.v1.XmlPullParser;
@@ -34,6 +38,9 @@ public class CultureFragment extends Fragment {
     private ArrayList<CulRecyclerViewItemData> list = new ArrayList<>();
     private Context mContext = getContext();
     private String mTAG = "CultureFragment";
+    private LinearLayoutManager linearLayoutManager;
+    private DividerItemDecoration dividerItemDecoration;
+    private cultureHandler handler;
 
     public CultureFragment() {
     }
@@ -45,10 +52,20 @@ public class CultureFragment extends Fragment {
 
         View view = inflater.inflate(R.layout.fragment_culture, container, false);
         String strtext = getArguments().getString("date");
+        handler = new cultureHandler();
+
+        linearLayoutManager = new LinearLayoutManager(mContext);
+
         recyclerView = (RecyclerView) view.findViewById(R.id.recyclerView1);
-        recyclerView.setLayoutManager(new LinearLayoutManager(mContext));
+        recyclerView.setLayoutManager(linearLayoutManager);
+
+        dividerItemDecoration = new DividerItemDecoration(recyclerView.getContext(), linearLayoutManager.getOrientation());
+        dividerItemDecoration.setDrawable(ResourcesCompat.getDrawable(getResources(), R.drawable.bottomborder,null));
+        recyclerView.addItemDecoration(dividerItemDecoration);
+
         adapter = new CulRecyclerViewAdapter(new ArrayList<CulRecyclerViewItemData>());
         recyclerView.setAdapter(adapter);
+
         /**데이터 가져오기*/
         Thread thread = new Thread() {
             @Override
@@ -62,7 +79,7 @@ public class CultureFragment extends Fragment {
         return view;
     }
 
-    Handler handler = new Handler() {
+   private class  cultureHandler extends Handler {
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
