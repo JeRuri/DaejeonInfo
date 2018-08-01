@@ -10,6 +10,8 @@ import android.os.Bundle;
 
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.res.ResourcesCompat;
+import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -22,6 +24,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.abs2432gmail.daejeoninfo.R;
+import com.abs2432gmail.daejeoninfo.WebViewActivity;
 import com.bumptech.glide.Glide;
 
 
@@ -53,6 +56,8 @@ public class NewsFragment extends Fragment {
     int page = 1;
     int totalPage = 2;
     String urlPage = REQUEST_URL + "&pageIndex=";
+    private LinearLayoutManager linearLayoutManager;
+    private DividerItemDecoration dividerItemDecoration;
 
     public NewsFragment() {}
 
@@ -63,8 +68,15 @@ public class NewsFragment extends Fragment {
 
         mContext = getActivity();
 
+        linearLayoutManager = new LinearLayoutManager(mContext);
+
         recyclerView = (RecyclerView) view.findViewById(R.id.recyclerView2);
-        recyclerView.setLayoutManager(new LinearLayoutManager(mContext));
+        recyclerView.setLayoutManager(linearLayoutManager);
+
+        dividerItemDecoration = new DividerItemDecoration(recyclerView.getContext(), linearLayoutManager.getOrientation());
+        dividerItemDecoration.setDrawable(ResourcesCompat.getDrawable(getResources(), R.drawable.bottomborder,null));
+        recyclerView.addItemDecoration(dividerItemDecoration);
+
         adapter = new NewsRecyclerViewAdapter(new ArrayList<NewsData>());
         recyclerView.setAdapter(adapter);
 
@@ -139,9 +151,10 @@ public class NewsFragment extends Fragment {
                 public void onClick(View view) {
                     int itemPosition = recyclerView.getChildAdapterPosition(view);
                     NewsData item = datas.get(itemPosition);
-                    Toast.makeText(mContext,"해당페이지로 이동합니다", Toast.LENGTH_LONG ).show();
-                    Uri uri = Uri.parse(item.newsUri);
-                    Intent intent = new Intent(Intent.ACTION_VIEW,uri);
+                    Intent intent = new Intent(mContext, WebViewActivity.class);
+                    Bundle bundle = new Bundle();
+                    bundle.putString("url", item.newsUri);
+                    intent.putExtra("data", bundle);
                     startActivity(intent);
 
                 }

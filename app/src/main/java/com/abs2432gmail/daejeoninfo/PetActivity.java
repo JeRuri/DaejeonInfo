@@ -16,7 +16,7 @@ public class PetActivity extends AppCompatActivity {
     private ViewPager viewPager;
     private TabLayout tabLayout = null;
     private TabPagerAdapter tabPagerAdapter = null;
-    private PetFragment petFragment;
+    private PetFragment petFragment, petFragment1, petFragment2;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,6 +29,8 @@ public class PetActivity extends AppCompatActivity {
         tabLayout.setupWithViewPager(viewPager, true);
         viewPager.setAdapter(new TabPagerAdapter(getSupportFragmentManager()));
         tabLayout.getTabAt(0).setText("최신순");
+        tabLayout.getTabAt(1).setText("강아지");
+        tabLayout.getTabAt(2).setText("고양이");
         tabLayout.addOnTabSelectedListener(onTabSelectedListener);
 
     }
@@ -51,7 +53,7 @@ public class PetActivity extends AppCompatActivity {
     };
 
     public class TabPagerAdapter extends FragmentPagerAdapter {
-        int MAX_PAGE = 1;
+        int MAX_PAGE = 3;
 
         public TabPagerAdapter(FragmentManager fm) {
             super(fm);
@@ -68,6 +70,19 @@ public class PetActivity extends AppCompatActivity {
                     bundle.putString("data3","최신순");
                     petFragment.setArguments(bundle);
                     return petFragment;
+
+                case 1:
+                    petFragment1 = new PetFragment();
+                    bundle.putString("data3","강아지");
+                    petFragment1.setArguments(bundle);
+                    return petFragment1;
+
+                case 2:
+                    petFragment2 = new PetFragment();
+                    bundle.putString("data3","고양이");
+                    petFragment2.setArguments(bundle);
+                    return petFragment2;
+
                 default:
                     return null;
             }

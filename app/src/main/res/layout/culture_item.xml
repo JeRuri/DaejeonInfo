@@ -4,50 +4,45 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:padding="16dp"
-    android:orientation="horizontal">
+    android:orientation="horizontal"
+    android:padding="16dp">
 
     <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/img1"
         android:layout_width="100dp"
         android:layout_height="100dp"
+        android:layout_gravity="center"
         app:civ_border_color="@color/black"
         app:civ_border_width="1dp"
         tools:src="@drawable/festival" />
 
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:paddingLeft="16dp"
+        android:orientation="vertical">
 
-        <LinearLayout
+        <TextView
+            android:id="@+id/culTitle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:paddingTop="10dp"
+            android:textColor="#000"
+            android:textSize="20sp"
+            tools:text="유성온천축제" />
 
-            <TextView
-                android:id="@+id/culTitle"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:paddingLeft="14dp"
-                android:paddingTop="10dp"
-                android:textColor="#000"
-                android:textSize="20sp"
-                tools:text="유성온천축제" />
+        <TextView
+            android:id="@+id/culDate"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            tools:text="2017-10-21~2017-10-24" />
 
-            <TextView
-                android:id="@+id/culDate"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:paddingLeft="14dp"
-                tools:text="2018. 5. 11(금)~5. 13(일)" />
-
-            <TextView
-                android:id="@+id/culLoc"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:paddingLeft="14dp"
-                tools:text="온천로 일원, 계룡스파텔, 갑천변 등" />
-        </LinearLayout>
+        <TextView
+            android:id="@+id/culLoc"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            tools:text="온천로 일원, 계룡스파텔, 갑천변 등" />
     </LinearLayout>
+
 </LinearLayout>

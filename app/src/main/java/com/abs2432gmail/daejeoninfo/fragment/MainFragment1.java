@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.abs2432gmail.daejeoninfo.R;
+import com.abs2432gmail.daejeoninfo.WebViewActivity;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -32,8 +33,12 @@ public class MainFragment1 extends Fragment {
         daejeonURL.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Uri uri = Uri.parse("http://www.daejeon.go.kr/");
-                Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+                Intent intent = new Intent(getContext(), WebViewActivity.class);
+
+                Bundle bundle = new Bundle();
+                bundle.putString("url","http://www.daejeon.go.kr/");
+
+                intent.putExtra("data",bundle);
                 startActivity(intent);
             }
         });

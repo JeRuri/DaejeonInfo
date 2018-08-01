@@ -8,6 +8,7 @@ import android.os.Message;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -37,8 +38,8 @@ public class PetFragment extends Fragment {
     private PetRecyclerViewAdapter adapter;
     private ArrayList<PetRecyclerViewItemData> list = new ArrayList<>();
     private Context mContext;
-    private String mTAG = "PetFragment";
-    String queryUrl = PET + API_KEY + "&pageNo=";
+    private String TAG = "PetFragment";
+    String pageUrl = PET + API_KEY + "&pageNo=";
     int page = 1;
     int totalPage = 2;
     private MyHandler handler;
@@ -51,6 +52,14 @@ public class PetFragment extends Fragment {
         mContext = getActivity();
         handler = new MyHandler();
         String strtext = getArguments().getString("data3");
+        Log.d(TAG, "onCreateView: " + strtext);
+
+        if (strtext.equals("강아지")){
+            pageUrl = PET + API_KEY + "&searchCondition=1"+ "&pageNo=";
+        } else if (strtext.equals("고양이")){
+            pageUrl = PET + API_KEY + "&searchCondition=2"+ "&pageNo=";
+
+        }
         recyclerView = (RecyclerView) view.findViewById(R.id.recyclerView3);
         recyclerView.setLayoutManager(new LinearLayoutManager(mContext));
         adapter = new PetRecyclerViewAdapter(new ArrayList<PetRecyclerViewItemData>());
@@ -105,14 +114,15 @@ public class PetFragment extends Fragment {
     }
 
     public class PetRecyclerViewItemData {
-        public String imgPET, adoptionStatus,  gender, date, age, location, memo;
+        public String imgPET, adoptionStatus,classification, gender, date, age, location, memo;
 
         public PetRecyclerViewItemData(){}
         //여기에 데이터 들어감
-        public PetRecyclerViewItemData(String imgPET, String adoptionStatus, String gender,
+        public PetRecyclerViewItemData(String imgPET, String adoptionStatus, String classification, String gender,
                                        String date, String age, String location, String memo){
             this.imgPET = imgPET;
             this.adoptionStatus = adoptionStatus;
+            this.classification = classification;
             this.gender = gender;
             this.date = date;
             this.age = age;
@@ -136,7 +146,7 @@ public class PetFragment extends Fragment {
         public class ViewHolder extends RecyclerView.ViewHolder {
             PetRecyclerViewItemData petRecyclerViewItemData;
             ImageView imageView, expandBtn;
-            TextView textView1, textView3, textView4,
+            TextView textView1, textView2, textView3, textView4,
                         textView5, textView6, textView7;
             LinearLayout lin_expandview;
 
@@ -144,6 +154,7 @@ public class PetFragment extends Fragment {
                 super(itemView);
                 imageView = itemView.findViewById(R.id.imgPET);
                 textView1 = itemView.findViewById(R.id.adoptionStatus);
+                textView2 = itemView.findViewById(R.id.classification);
                 textView3 = itemView.findViewById(R.id.gender);
                 textView4 = itemView.findViewById(R.id.age);
                 textView5 = itemView.findViewById(R.id.date);
@@ -160,6 +171,7 @@ public class PetFragment extends Fragment {
                 //글라이드/context/load 파일경로/into 이미지뷰
                 Glide.with(mContext).load(petRecyclerViewItemData.imgPET).into(imageView);
                 textView1.setText(petRecyclerViewItemData.adoptionStatus);
+                textView2.setText(petRecyclerViewItemData.classification);
                 textView3.setText(petRecyclerViewItemData.gender);
                 textView4.setText(petRecyclerViewItemData.age);
                 textView5.setText(petRecyclerViewItemData.date);
@@ -180,12 +192,12 @@ public class PetFragment extends Fragment {
             holder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    boolean sholdExpand = holder.lin_expandview.getVisibility() == View.GONE;
+                    boolean shouldExpand = holder.lin_expandview.getVisibility() == View.GONE;
 
                     ChangeBounds transition = new ChangeBounds();
                     transition.setDuration(125);
 
-                    if(sholdExpand){
+                    if(shouldExpand){
                         holder.lin_expandview.setVisibility(View.VISIBLE);
                         holder.expandBtn.setRotationX(180);
                         holder.expandBtn.setPivotX(50);
@@ -198,7 +210,7 @@ public class PetFragment extends Fragment {
                     }
 
                     TransitionManager.beginDelayedTransition(recyclerView, transition);
-                    holder.itemView.setActivated(sholdExpand);
+                    holder.itemView.setActivated(shouldExpand);
                 }
             });
         }
@@ -215,7 +227,7 @@ public class PetFragment extends Fragment {
         PetRecyclerViewItemData petRecyclerViewItemData = null;
 
         try {
-            URL url = new URL(queryUrl + page);
+            URL url = new URL(pageUrl + page);
             InputStream is = url.openStream();
 
             XmlPullParserFactory factory = XmlPullParserFactory.newInstance();
@@ -273,6 +285,26 @@ public class PetFragment extends Fragment {
                                     petRecyclerViewItemData.adoptionStatus = "주인반환";
                                     break;
                                 default:
+                                    break;
+                            }
+                        }
+
+                        else if(tag.equals("classification")) {
+                            //1:강아지 , 2:고양이, 3:기타동물
+                            xpp.next();
+                            buffer.append(xpp.getText());
+                            buffer.append("\n");
+                            String strClassification = xpp.getText();
+                            int classification = Integer.parseInt(strClassification);
+                            switch (classification){
+                                case 1:
+                                    petRecyclerViewItemData.classification = "강아지";
+                                    break;
+                                case 2:
+                                    petRecyclerViewItemData.classification = "고양이";
+                                    break;
+                                case 3:
+                                    petRecyclerViewItemData.classification = "기타동물";
                                     break;
                             }
                         }
