@@ -2,6 +2,8 @@ package com.abs2432gmail.daejeoninfo.fragment;
 
 
 import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -12,8 +14,10 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.abs2432gmail.daejeoninfo.MapView;
 import com.abs2432gmail.daejeoninfo.R;
 
 import org.json.JSONArray;
@@ -34,12 +38,13 @@ import static com.abs2432gmail.daejeoninfo.Common.NetworkConstant.HOSPITAL;
 
 
 public class HospitalFragment extends Fragment {
-    private Context mContext = getContext();
     private RecyclerView recyclerView;
     private HosRecyclerViewAdapter adapter;
+    private Context mContext;
     private ArrayList<HosRecyclerViewItemData> list = new ArrayList<>();
     private String mTAG = "HospitalFragment";
     private String REQUEST_URL = HOSPITAL + API_KEY;
+    private ImageView mapView;
 
 
     public HospitalFragment() { }
@@ -104,7 +109,22 @@ public class HospitalFragment extends Fragment {
         @NonNull
         @Override
         public HosRecyclerViewAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.hospital_item, parent, false);
+            final View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.hospital_item, parent, false);
+            mapView = (ImageView) view.findViewById(R.id.mapView);
+            mapView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    int itemPosition = recyclerView.getChildAdapterPosition(view);
+                    HosRecyclerViewItemData data = hosRecyclerViewItemDatas.get(itemPosition);
+                    /*Intent intent = new Intent(getActivity(), MapView.class);
+                    startActivity(intent);*/
+                    String url ="daummaps://open";
+                    String geo = "geo:0,0?q="+data.hospitalAdr;
+                    Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+                    intent.setData(Uri.parse(geo));
+                    startActivity(intent);
+                }
+            });
             HosRecyclerViewAdapter.ViewHolder viewHolder = new HosRecyclerViewAdapter.ViewHolder(view);
             return viewHolder;
         }

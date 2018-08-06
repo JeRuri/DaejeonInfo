@@ -2,6 +2,9 @@ package com.abs2432gmail.daejeoninfo;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
+import android.content.pm.Signature;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentManager;
@@ -10,6 +13,7 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Base64;
 import android.util.Log;
 import android.view.GestureDetector;
 import android.view.LayoutInflater;
@@ -28,9 +32,14 @@ import com.abs2432gmail.daejeoninfo.fragment.MainFragment2;
 import com.abs2432gmail.daejeoninfo.fragment.MainFragment3;
 import com.pm10.library.CircleIndicator;
 
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 
+import static com.kakao.util.maps.helper.Utility.getPackageInfo;
+
 public class MainActivity extends AppCompatActivity {
+    private String TAG= "MainActivity";
         private Context mContext = MainActivity.this;
         private ViewPager viewPager;
         private Animation anim;
@@ -96,7 +105,6 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         }));
-
 
     }
 
