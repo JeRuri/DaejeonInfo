@@ -28,7 +28,7 @@ public class HospitalActivity extends AppCompatActivity {
         tabLayout = (TabLayout) findViewById(R.id.sliding_tabs5);
         tabLayout.setupWithViewPager(viewPager, true);
         viewPager.setAdapter(new TabPagerAdapter(getSupportFragmentManager()));
-        tabLayout.getTabAt(0).setText("최신순");
+        tabLayout.getTabAt(0).setText("전체");
         tabLayout.addOnTabSelectedListener(onTabSelectedListener);
 
 
@@ -66,8 +66,10 @@ public class HospitalActivity extends AppCompatActivity {
             switch (position) {
                 case 0:
                     hospitalFragment = new HospitalFragment();
+                    bundle.putString("data","전체");
                     hospitalFragment.setArguments(bundle);
                     return hospitalFragment;
+
                 default:
                     return null;
             }

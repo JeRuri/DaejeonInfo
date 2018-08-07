@@ -27,7 +27,7 @@
         app:p_strokeColor="@color/gray"/>
 
     <TextView
-        android:background="@drawable/back"
+        android:background="@drawable/main_border"
         android:paddingTop="10dp"
         android:textStyle="bold"
         android:id="@+id/tv"
@@ -37,7 +37,7 @@
         android:marqueeRepeatLimit="marquee_forever"
         android:paddingBottom="10dp"
         android:singleLine="true"
-        android:text="대전시에 관련된 뉴스를 전달해주는 어플입니다. 상단 이미지를 클릭하면 해당페이지로 이동합니다~"
+        android:text="대전광역시에 관련된 정보를 전달해주는 어플입니다.   상단 이미지를 클릭하면 해당페이지로 이동합니다~"
         android:textSize="14sp" />
 
     <android.support.v7.widget.RecyclerView
@@ -45,7 +45,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         tools:layoutManager="android.support.v7.widget.GridLayoutManager"
-        tools:listitem="@layout/activity_main_item"
+        tools:listitem="@layout/main_item"
         tools:spanCount="3">
 
     </android.support.v7.widget.RecyclerView>

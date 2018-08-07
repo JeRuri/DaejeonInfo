@@ -14,20 +14,23 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
+import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
-import com.abs2432gmail.daejeoninfo.MapView;
 import com.abs2432gmail.daejeoninfo.R;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
 import okhttp3.FormBody;
-
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
@@ -44,40 +47,70 @@ public class HospitalFragment extends Fragment {
     private ArrayList<HosRecyclerViewItemData> list = new ArrayList<>();
     private String mTAG = "HospitalFragment";
     private String REQUEST_URL = HOSPITAL + API_KEY;
-    private ImageView mapView;
-
-
-    public HospitalFragment() { }
-
+    private int page = 1;
+    private int totalPage = 2;
+    private String urlPage = REQUEST_URL + "&pageIndex=";
+    private Button mapBtn;
+    private LinearLayoutManager linearLayoutManager;
+    private Date today;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.fragment_hospital, container, false);
+        mContext = getActivity();
 
-        View view =  inflater.inflate(R.layout.fragment_hospital, container, false);
+        linearLayoutManager = new LinearLayoutManager(mContext);
+
         recyclerView = (RecyclerView) view.findViewById(R.id.recyclerView5);
-        recyclerView.setLayoutManager(new LinearLayoutManager(mContext));
+        recyclerView.setLayoutManager(linearLayoutManager);
         adapter = new HosRecyclerViewAdapter(new ArrayList<HosRecyclerViewItemData>());
         recyclerView.setAdapter(adapter);
+
+        recyclerView.addOnScrollListener(onScrollListener);
 
         new AsynTaskGetHosData().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
         return view;
     }
 
-    public class HosRecyclerViewItemData{
+    private RecyclerView.OnScrollListener onScrollListener = new RecyclerView.OnScrollListener() {
+        @Override
+        public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+            super.onScrolled(recyclerView, dx, dy);
+            int lastVisibleItemPosition = ((LinearLayoutManager) recyclerView.getLayoutManager()).findLastCompletelyVisibleItemPosition();
+            int itemTotalCount = recyclerView.getAdapter().getItemCount() - 1;
+
+            if (itemTotalCount == lastVisibleItemPosition) {
+                if (page == totalPage) {
+                    Toast.makeText(mContext, "마지막입니다...", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                Toast.makeText(mContext, "로딩중...", Toast.LENGTH_SHORT).show();
+                page++;
+                new AsynTaskGetHosData().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+            }
+
+        }
+    };
+
+    public HospitalFragment() {
+    }
+
+    public class HosRecyclerViewItemData {
         public String hospitalName, hospitalAdr, hospitalTel;
 
-        public HosRecyclerViewItemData(){}
+        public HosRecyclerViewItemData() {
+        }
 
 
-        public HosRecyclerViewItemData(String hospitalName, String hospitalAdr, String hospitalTel){
+        public HosRecyclerViewItemData(String hospitalName, String hospitalAdr, String hospitalTel) {
             this.hospitalName = hospitalName;
             this.hospitalAdr = hospitalAdr;
             this.hospitalTel = hospitalTel;
         }
     }
 
-    private class HosRecyclerViewAdapter extends RecyclerView.Adapter<HosRecyclerViewAdapter.ViewHolder>{
+    private class HosRecyclerViewAdapter extends RecyclerView.Adapter<HosRecyclerViewAdapter.ViewHolder> {
         private ArrayList<HosRecyclerViewItemData> hosRecyclerViewItemDatas;
 
         public HosRecyclerViewAdapter(ArrayList<HosRecyclerViewItemData> data) {
@@ -88,7 +121,7 @@ public class HospitalFragment extends Fragment {
             HosRecyclerViewItemData hosRecyclerViewItemData;
             TextView textView1, textView2, textView3;
 
-            public ViewHolder (View itemView) {
+            public ViewHolder(View itemView) {
                 super(itemView);
                 textView1 = itemView.findViewById(R.id.hospitalName);
                 textView2 = itemView.findViewById(R.id.hospitalAdr);
@@ -110,16 +143,14 @@ public class HospitalFragment extends Fragment {
         @Override
         public HosRecyclerViewAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
             final View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.hospital_item, parent, false);
-            mapView = (ImageView) view.findViewById(R.id.mapView);
-            mapView.setOnClickListener(new View.OnClickListener() {
+            mapBtn = (Button) view.findViewById(R.id.mapView);
+            mapBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     int itemPosition = recyclerView.getChildAdapterPosition(view);
                     HosRecyclerViewItemData data = hosRecyclerViewItemDatas.get(itemPosition);
-                    /*Intent intent = new Intent(getActivity(), MapView.class);
-                    startActivity(intent);*/
-                    String url ="daummaps://open";
-                    String geo = "geo:0,0?q="+data.hospitalAdr;
+                    String url = "daummaps://open";
+                    String geo = "geo:0,0?q=" + data.hospitalAdr;
                     Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
                     intent.setData(Uri.parse(geo));
                     startActivity(intent);
@@ -140,7 +171,7 @@ public class HospitalFragment extends Fragment {
             return hosRecyclerViewItemDatas.size();
         }
 
-        public void add (HosRecyclerViewItemData hosRecyclerViewItemData){
+        public void add(HosRecyclerViewItemData hosRecyclerViewItemData) {
             hosRecyclerViewItemDatas.add(hosRecyclerViewItemData);
             notifyDataSetChanged();
         }
@@ -150,18 +181,22 @@ public class HospitalFragment extends Fragment {
         private String TaskName = "AsynTaskGetHosData";
 
         //시작전
-        protected void onPreExecute() {super.onPreExecute();}
+        protected void onPreExecute() {
+            super.onPreExecute();
+        }
 
 
         //완료후
         protected void onPostExecute(ArrayList<HosRecyclerViewItemData> hosRecyclerViewItemDatas) {
             super.onPostExecute(hosRecyclerViewItemDatas);
-            if(hosRecyclerViewItemDatas == null)
+            if (hosRecyclerViewItemDatas == null)
                 return;
-            if(hosRecyclerViewItemDatas.size() == 0)
+            if (hosRecyclerViewItemDatas.size() == 0)
                 return;
-            adapter = new HosRecyclerViewAdapter(hosRecyclerViewItemDatas);
-            recyclerView.setAdapter(adapter);
+            for (int i = 0; i < hosRecyclerViewItemDatas.size(); i++) {
+                adapter.add(hosRecyclerViewItemDatas.get(i));
+            }
+            adapter.notifyDataSetChanged();
         }
 
         @Override
@@ -170,7 +205,7 @@ public class HospitalFragment extends Fragment {
             String responseBody = "false";
             ArrayList<HosRecyclerViewItemData> hosRecyclerViewItemDatas = new ArrayList<>();
 
-            try{
+            try {
                 OkHttpClient toServer = new OkHttpClient.Builder()
                         .connectTimeout(60, TimeUnit.SECONDS)
                         .readTimeout(60, TimeUnit.SECONDS)
@@ -180,7 +215,7 @@ public class HospitalFragment extends Fragment {
                         .build();
 
                 Request request = new Request.Builder()
-                        .url(REQUEST_URL)
+                        .url(urlPage + page)
                         .get()
                         .build();
 
@@ -189,25 +224,29 @@ public class HospitalFragment extends Fragment {
 
                 int responseCode = response.code();
 
-                if(flag){
+                if (flag) {
                     responseBody = String.valueOf(response.body().string());
                 }
 
-                if(responseBody.equals("false")) {
+                if (responseBody.equals("false")) {
                     Log.d(mTAG, TaskName + " : 서버 연결 실패");
                     return null;
                 }
 
                 JSONObject jsonObject = new JSONObject(responseBody);
+                JSONObject pageInfo = jsonObject.getJSONObject("paginationInfo");
+                totalPage = pageInfo.getInt("totalPageCount");
+
+
                 JSONArray resultList = jsonObject.getJSONArray("resultList");
 
                 int resultSize = resultList.length();
-                if(resultSize == 0 ){
+                if (resultSize == 0) {
                     Log.d(mTAG, TaskName + " : 정보가 없습니다.");
                     return null;
                 }
 
-                for(int i = 0; i < resultSize; i++){
+                for (int i = 0; i < resultSize; i++) {
                     JSONObject data = resultList.getJSONObject(i);
                     String HospitalName = data.getString("nm");
                     String HospitalAdr = data.getString("addr1");
@@ -216,8 +255,8 @@ public class HospitalFragment extends Fragment {
                     hosRecyclerViewItemDatas.add(hosRecyclerViewItemData);
                 }
 
-            } catch (Exception e){
-                Log.d(mTAG, TaskName+" : "+e.toString());
+            } catch (Exception e) {
+                Log.d(mTAG, TaskName + " : " + e.toString());
                 return null;
             }
 

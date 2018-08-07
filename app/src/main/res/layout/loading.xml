@@ -9,7 +9,7 @@
 
     <ImageView
         android:id="@+id/loading"
-        android:src="@drawable/daejeonlogo"
+        android:src="@drawable/daejeon_logo"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
 
