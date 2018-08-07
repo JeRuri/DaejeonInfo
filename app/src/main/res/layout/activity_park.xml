@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/white"
+    tools:context=".ParkActivity">
+
+    <android.support.design.widget.TabLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/sliding_tabs6"
+        android:background="@color/white"
+        app:tabIndicatorColor="@android:color/holo_green_dark"
+        app:tabSelectedTextColor="@android:color/black"
+        app:tabMode="fixed"
+        app:tabGravity="fill" />
+
+    <LinearLayout
+        android:padding="4dp"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+    <EditText
+        android:layout_width="250dp"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="8dp"/>
+
+    <Button
+        android:text="검색"
+        android:textColor="@drawable/button_text_color"
+        android:background="@drawable/selector"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    </LinearLayout>
+    <android.support.v4.view.ViewPager
+        android:id="@+id/viewPager_park"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+</LinearLayout>

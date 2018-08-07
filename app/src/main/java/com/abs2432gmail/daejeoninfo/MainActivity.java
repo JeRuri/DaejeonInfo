@@ -112,6 +112,7 @@ public class MainActivity extends AppCompatActivity {
         mainRecyclerViewItemDataArrayList.add(new MainRecyclerViewItemData(R.drawable.animal,"유기동물",PetActivity.class));
         mainRecyclerViewItemDataArrayList.add(new MainRecyclerViewItemData(R.drawable.hospital,"당직병원",HospitalActivity.class));
         mainRecyclerViewItemDataArrayList.add(new MainRecyclerViewItemData(R.drawable.exam,"시험",TestActivity.class));
+        mainRecyclerViewItemDataArrayList.add(new MainRecyclerViewItemData(R.drawable.park,"공원",ParkActivity.class));
 
         return mainRecyclerViewItemDataArrayList;
     }
