@@ -27,7 +27,12 @@ public class TestActivity extends AppCompatActivity {
         tabLayout = (TabLayout) findViewById(R.id.sliding_tabs4);
         tabLayout.setupWithViewPager(viewPager, true);
         viewPager.setAdapter(new TabPagerAdapter(getSupportFragmentManager()));
-        tabLayout.getTabAt(0).setText("최신순");
+        tabLayout.getTabAt(0).setText("대전시");
+        tabLayout.getTabAt(1).setText("임기제");
+        tabLayout.getTabAt(2).setText("자격증");
+        tabLayout.getTabAt(3).setText("공무원");
+        tabLayout.getTabAt(4).setText("타기관");
+        tabLayout.addOnTabSelectedListener(onTabSelectedListener);
     }
 
     TabLayout.OnTabSelectedListener onTabSelectedListener = new TabLayout.OnTabSelectedListener() {
@@ -49,7 +54,7 @@ public class TestActivity extends AppCompatActivity {
 
 
     public class TabPagerAdapter extends FragmentPagerAdapter {
-        int MAX_PAGE = 1;
+        int MAX_PAGE = 5;
 
         public TabPagerAdapter(FragmentManager fm) {
             super(fm);
@@ -63,7 +68,27 @@ public class TestActivity extends AppCompatActivity {
             switch (position) {
                 case 0:
                     testFragment = new TestFragment();
-                    bundle.putString("data3","최신순");
+                    bundle.putString("data","대전시");
+                    testFragment.setArguments(bundle);
+                    return testFragment;
+                case 1:
+                    testFragment = new TestFragment();
+                    bundle.putString("data","임기제");
+                    testFragment.setArguments(bundle);
+                    return testFragment;
+                case 2:
+                    testFragment = new TestFragment();
+                    bundle.putString("data","자격증");
+                    testFragment.setArguments(bundle);
+                    return testFragment;
+                case 3:
+                    testFragment = new TestFragment();
+                    bundle.putString("data","공무원");
+                    testFragment.setArguments(bundle);
+                    return testFragment;
+                case 4:
+                    testFragment = new TestFragment();
+                    bundle.putString("data","타기관");
                     testFragment.setArguments(bundle);
                     return testFragment;
                 default:

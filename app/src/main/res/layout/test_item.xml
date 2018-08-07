@@ -2,24 +2,29 @@
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="150dp"
     android:padding="16dp"
-    android:background="@drawable/main_border"
-    android:orientation="vertical">
+    android:gravity="center"
+    android:background="@color/white"
+    android:orientation="vertical"
+    android:layout_marginBottom="8dp">
 
     <TextView
         android:id="@+id/testCategory"
         android:textSize="17sp"
         android:text="[타 기관] 시험정보"
+        android:textColor="@color/black"
         android:textStyle="bold"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:visibility="gone"/>
 
     <TextView
         android:id="@+id/testTitle"
         android:textSize="17sp"
         android:text="서울특별시 종로구 보건소장(개방형직위) 채용 공고"
         android:textStyle="bold"
+        android:textColor="@color/black"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 

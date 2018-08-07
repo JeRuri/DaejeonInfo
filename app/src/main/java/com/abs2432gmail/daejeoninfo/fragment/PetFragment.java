@@ -105,6 +105,7 @@ public class PetFragment extends Fragment {
             }
         }
     };
+
     private class MyHandler extends Handler{
         @Override
         public void handleMessage(Message msg) {
@@ -148,7 +149,7 @@ public class PetFragment extends Fragment {
             ImageView imageView, expandBtn;
             TextView textView1, textView2, textView3, textView4,
                         textView5, textView6, textView7;
-            LinearLayout lin_expandview;
+            LinearLayout lin_expandView;
 
             public ViewHolder(View itemView) {
                 super(itemView);
@@ -160,7 +161,7 @@ public class PetFragment extends Fragment {
                 textView5 = itemView.findViewById(R.id.date);
                 textView6 = itemView.findViewById(R.id.location);
                 textView7 = itemView.findViewById(R.id.memo);
-                lin_expandview = itemView.findViewById(R.id.lin_expandview);
+                lin_expandView = itemView.findViewById(R.id.lin_expandview);
                 expandBtn = itemView.findViewById(R.id.expandBtn);
             }
 
@@ -192,18 +193,18 @@ public class PetFragment extends Fragment {
             holder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    boolean shouldExpand = holder.lin_expandview.getVisibility() == View.GONE;
+                    boolean shouldExpand = holder.lin_expandView.getVisibility() == View.GONE;
 
                     ChangeBounds transition = new ChangeBounds();
                     transition.setDuration(125);
 
                     if(shouldExpand){
-                        holder.lin_expandview.setVisibility(View.VISIBLE);
+                        holder.lin_expandView.setVisibility(View.VISIBLE);
                         holder.expandBtn.setRotationX(180);
                         holder.expandBtn.setPivotX(50);
                         holder.expandBtn.setPivotY(50);
                     } else {
-                        holder.lin_expandview.setVisibility(View.GONE);
+                        holder.lin_expandView.setVisibility(View.GONE);
                         holder.expandBtn.setRotationX(360);
                         holder.expandBtn.setPivotX(50);
                         holder.expandBtn.setPivotY(50);

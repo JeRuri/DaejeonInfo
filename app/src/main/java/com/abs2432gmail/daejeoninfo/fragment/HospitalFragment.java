@@ -48,11 +48,10 @@ public class HospitalFragment extends Fragment {
     private String mTAG = "HospitalFragment";
     private String REQUEST_URL = HOSPITAL + API_KEY;
     private int page = 1;
-    private int totalPage = 2;
+    private int totalPage = 3;
     private String urlPage = REQUEST_URL + "&pageIndex=";
     private Button mapBtn;
     private LinearLayoutManager linearLayoutManager;
-    private Date today;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,

@@ -1,6 +1,7 @@
 package com.abs2432gmail.daejeoninfo.fragment;
 
 
+import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -11,8 +12,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.abs2432gmail.daejeoninfo.R;
+
+import junit.framework.Test;
 
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserFactory;
@@ -25,12 +29,16 @@ import java.util.ArrayList;
 import static com.abs2432gmail.daejeoninfo.Common.NetworkConstant.API_KEY;
 import static com.abs2432gmail.daejeoninfo.Common.NetworkConstant.TEST;
 
-
 public class TestFragment extends Fragment {
     private RecyclerView recyclerView;
     private ArrayList<TestRecyclerViewItemData> list = new ArrayList<>();
     private TestRecyclerViewAdapter adapter;
-
+    private  TestHandler handler;
+    private String testUrl = TEST + API_KEY + "&pageNo=";
+    private int page = 1;
+    private int totalPage = 577;
+    private Context mContext;
+    private LinearLayoutManager linearLayoutManager;
 
     public TestFragment() {
     }
@@ -39,8 +47,26 @@ public class TestFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_test, container, false);
+        mContext = getActivity();
+        handler = new TestHandler();
+        linearLayoutManager = new LinearLayoutManager(mContext);
+
+        String strtext = getArguments().getString("data");
+
+        if (strtext.equals("공무원")){
+            testUrl = TEST + API_KEY + "&categorySeq=86" + "&pageNo=";
+        } else if (strtext.equals("임기제")) {
+            testUrl = TEST + API_KEY + "&categorySeq=87" + "&pageNo=";
+        } else if (strtext.equals("자격증")) {
+            testUrl = TEST + API_KEY + "&categorySeq=88" + "&pageNo=";
+        } else if (strtext.equals("대전시")) {
+            testUrl = TEST + API_KEY + "&categorySeq=89" + "&pageNo=";
+        } else if (strtext.equals("타기관")) {
+            testUrl = TEST + API_KEY + "&categorySeq=90" + "&pageNo=";
+        }
+
         recyclerView = (RecyclerView) view.findViewById(R.id.recyclerView4);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        recyclerView.setLayoutManager(linearLayoutManager);
         adapter = new TestRecyclerViewAdapter(new ArrayList<TestRecyclerViewItemData>());
         recyclerView.setAdapter(adapter);
 
@@ -53,16 +79,44 @@ public class TestFragment extends Fragment {
         };
         thread.start();
 
+        recyclerView.addOnScrollListener(onScrollListener);
         return view;
     }
 
-    Handler handler = new Handler() {
+    private RecyclerView.OnScrollListener onScrollListener = new RecyclerView.OnScrollListener() {
+        @Override
+        public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+            super.onScrolled(recyclerView, dx, dy);
+            int lastVisibleItemPosition = ((LinearLayoutManager) recyclerView.getLayoutManager()).findLastCompletelyVisibleItemPosition();
+            int itemTotalCount = recyclerView.getAdapter().getItemCount() - 1;
+            if (lastVisibleItemPosition == itemTotalCount) {
+                    if (page == totalPage) {
+                        Toast.makeText(mContext, "마지막입니다...", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+                    Toast.makeText(mContext, "로딩중...", Toast.LENGTH_SHORT).show();
+                    page++;
+                    Thread thread = new Thread() {
+                        @Override
+                        public void run() {
+                            super.run();
+                            getXmlData();
+                            handler.sendEmptyMessage(0);
+                        }
+                    };
+                    thread.start();
+            }
+        }
+    };
+
+
+    private class TestHandler extends Handler {
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
             adapter = new TestFragment.TestRecyclerViewAdapter(list);
             recyclerView.setAdapter(adapter);
         }
-    };
+    }
 
     public class TestRecyclerViewItemData {
         public String testCategory, testTitle, opnStrtDtTm, opnEndDtTm;
@@ -120,6 +174,7 @@ public class TestFragment extends Fragment {
 
         public void onBindViewHolder(TestRecyclerViewAdapter.ViewHolder holder, int position) {
             holder.setListData(testRecyclerViewItemDatas.get(position));
+
         }
 
         public int getItemCount() {
@@ -134,11 +189,10 @@ public class TestFragment extends Fragment {
 
     String getXmlData() {
         StringBuffer buffer = new StringBuffer();
-        String testUrl = TEST + API_KEY;
         TestRecyclerViewItemData testRecyclerViewItemData = null;
 
         try {
-            URL url = new URL(testUrl);
+            URL url = new URL(testUrl + page);
             InputStream is = url.openStream();
 
             XmlPullParserFactory factory = XmlPullParserFactory.newInstance();
