@@ -33,7 +33,7 @@ public class TestFragment extends Fragment {
     private RecyclerView recyclerView;
     private ArrayList<TestRecyclerViewItemData> list = new ArrayList<>();
     private TestRecyclerViewAdapter adapter;
-    private  TestHandler handler;
+    private TestHandler handler;
     private String testUrl = TEST + API_KEY + "&pageNo=";
     private int page = 1;
     private int totalPage = 577;

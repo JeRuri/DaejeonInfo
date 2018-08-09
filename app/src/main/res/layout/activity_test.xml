@@ -7,6 +7,13 @@
     android:orientation="vertical"
     tools:context=".CultureActivity">
 
+    <ImageView
+        android:id="@+id/test_url"
+        android:background="@drawable/main_selector"
+        android:src="@drawable/daejeon_text_url"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
     <android.support.design.widget.TabLayout
         android:id="@+id/sliding_tabs4"
         android:layout_width="match_parent"

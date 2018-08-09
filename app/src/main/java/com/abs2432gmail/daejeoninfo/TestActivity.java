@@ -1,12 +1,16 @@
 package com.abs2432gmail.daejeoninfo;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.ImageView;
+
 import com.abs2432gmail.daejeoninfo.fragment.TestFragment;
 
 
@@ -16,6 +20,7 @@ public class TestActivity extends AppCompatActivity {
     private TabLayout tabLayout = null;
     private TabPagerAdapter tabPagerAdapter = null;
     private TestFragment testFragment;
+    private ImageView testUrl;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,6 +30,19 @@ public class TestActivity extends AppCompatActivity {
 
         viewPager = (ViewPager) findViewById(R.id.viewPager4);
         tabLayout = (TabLayout) findViewById(R.id.sliding_tabs4);
+        testUrl = (ImageView) findViewById(R.id.test_url);
+        testUrl.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(mContext, WebViewActivity.class);
+
+                Bundle bundle = new Bundle();
+                bundle.putString("url","http://www.daejeon.go.kr/exa/index.do");
+
+                intent.putExtra("data",bundle);
+                startActivity(intent);
+            }
+        });
         tabLayout.setupWithViewPager(viewPager, true);
         viewPager.setAdapter(new TabPagerAdapter(getSupportFragmentManager()));
         tabLayout.getTabAt(0).setText("대전시");
