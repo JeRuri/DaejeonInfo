@@ -255,7 +255,6 @@ public class NewsFragment extends Fragment {
                 JSONObject pageInfo = jsonObject.getJSONObject("paginationInfo");
                 totalPage = pageInfo.getInt("totalPageCount");
 
-
                 JSONArray resultList = jsonObject.getJSONArray("resultList");
 
                 int resultSize = resultList.length();

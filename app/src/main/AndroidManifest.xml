@@ -29,13 +29,12 @@
         <activity android:name=".WebViewActivity" />
         <activity android:name=".MainActivity" />
         <activity android:name=".MapView" />
+        <activity android:name=".ParkActivity" />
 
         <meta-data
             android:name="com.kakao.sdk.AppKey"
             android:value="177258b170b8884c372cacc6f1864dd6" />
 
-        <activity android:name=".ParkActivity" />
-        <activity android:name=".fragment.ParkFragment"></activity>
     </application>
 
 </manifest>
