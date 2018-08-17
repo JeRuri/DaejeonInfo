@@ -2,13 +2,14 @@ package com.abs2432gmail.daejeoninfo.fragment;
 
 import android.content.Context;
 import android.os.AsyncTask;
+import android.os.Handler;
+import android.os.Message;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,17 +19,13 @@ import android.widget.Toast;
 
 import com.abs2432gmail.daejeoninfo.R;
 
-import org.json.JSONArray;
-import org.json.JSONObject;
+import org.xmlpull.v1.XmlPullParser;
+import org.xmlpull.v1.XmlPullParserFactory;
 
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.URL;
 import java.util.ArrayList;
-import java.util.concurrent.TimeUnit;
-
-import okhttp3.FormBody;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.RequestBody;
-import okhttp3.Response;
 
 import static com.abs2432gmail.daejeoninfo.Common.NetworkConstant.API_KEY;
 import static com.abs2432gmail.daejeoninfo.Common.NetworkConstant.PARK;
@@ -42,6 +39,7 @@ public class ParkFragment extends Fragment {
     String parkURL = PARK + API_KEY + "&pageNo=";
     int page = 1;
     int totalPage = 20;
+    private ParkHandler parkHandler;
 
     public ParkFragment(){}
 
@@ -50,6 +48,7 @@ public class ParkFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_park, container, false);
         mContext = getActivity();
+        parkHandler = new ParkHandler();
         linearLayoutManager = new LinearLayoutManager(mContext);
 
         recyclerView = (RecyclerView) view.findViewById(R.id.recyclerView_park);
@@ -58,15 +57,15 @@ public class ParkFragment extends Fragment {
         String strtext = getArguments().getString("data");
 
         if (strtext.equals("유성구")) {
-            parkURL = PARK + API_KEY + "&searchCondition=ADDRESS&searchKeyword=유성구" + "&pageNo=";
+            parkURL = PARK + API_KEY + "&searchCondition=ADDRESS&searchKeyword=유성구" + "&pageNo=" + page;
         } else if (strtext.equals("서구")) {
-            parkURL = PARK + API_KEY + "&searchCondition=ADDRESS&searchKeyword=서구" + "&pageNo=";
+            parkURL = PARK + API_KEY + "&searchCondition=ADDRESS&searchKeyword=서구" + "&pageNo="+ page;
         } else if (strtext.equals("대덕구")) {
-            parkURL = PARK + API_KEY + "&searchCondition=ADDRESS&searchKeyword=대덕구" + "&pageNo=";
+            parkURL = PARK + API_KEY + "&searchCondition=ADDRESS&searchKeyword=대덕구" + "&pageNo="+ page;
         } else if (strtext.equals("동구")) {
-            parkURL = PARK + API_KEY + "&searchCondition=ADDRESS&searchKeyword=동구" + "&pageNo=";
+            parkURL = PARK + API_KEY + "&searchCondition=ADDRESS&searchKeyword=동구" + "&pageNo="+ page;
         } else if (strtext.equals("중구")) {
-            parkURL = PARK + API_KEY + "&searchCondition=ADDRESS&searchKeyword=중구" + "&pageNo=";
+            parkURL = PARK + API_KEY + "&searchCondition=ADDRESS&searchKeyword=중구" + "&pageNo="+ page;
         }
 
         adapter = new ParkRecyclerViewAdapter(new ArrayList<ParkData>());
@@ -74,8 +73,15 @@ public class ParkFragment extends Fragment {
         recyclerView.addOnScrollListener(onScrollListener);
 
         new AsyncTaskGetParkData().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-
         return view;
+    }
+
+    private class ParkHandler extends Handler{
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            adapter.notifyDataSetChanged();
+        }
     }
 
     RecyclerView.OnScrollListener onScrollListener = new RecyclerView.OnScrollListener() {
@@ -91,6 +97,7 @@ public class ParkFragment extends Fragment {
                 }
                 Toast.makeText(mContext,"로딩중...",Toast.LENGTH_SHORT).show();
                 page++;
+
                 new AsyncTaskGetParkData().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
             }
         }
@@ -98,6 +105,8 @@ public class ParkFragment extends Fragment {
 
     public class ParkData {
         String title, address, latitude, longitude, section, tel;
+
+        private ParkData(){}
 
         public ParkData(String title, String address, String latitude, String longitude, String section, String tel) {
             this.title = title;
@@ -123,7 +132,7 @@ public class ParkFragment extends Fragment {
 
             public ViewHolder(View itemView) {
                 super(itemView);
-                linearLayout = itemView.findViewById(R.id.park_map_view);
+                linearLayout = itemView.findViewById(R.id.map_layout);
                 textView1 = itemView.findViewById(R.id.parkTitle);
                 textView2 = itemView.findViewById(R.id.parkSection);
                 textView3 = itemView.findViewById(R.id.parkAdr);
@@ -161,102 +170,107 @@ public class ParkFragment extends Fragment {
         }
     }
 
-    private class AsyncTaskGetParkData extends AsyncTask<Void, Integer, ArrayList<ParkData>> {
-        private String TaskName = "AsyncTaskGetParkData";
+    String getXmlData() {
+        StringBuffer buffer = new StringBuffer();
+        ParkData data = null;
 
-        //시작하기 전
+        try {
+            URL url = new URL(parkURL + page);
+            InputStream is = url.openStream();
+
+            XmlPullParserFactory factory = XmlPullParserFactory.newInstance();
+            XmlPullParser xpp = factory.newPullParser();
+            xpp.setInput(new InputStreamReader(is, "UTF-8"));
+
+            String tag;
+
+            xpp.next();
+
+            int eventType = xpp.getEventType();
+
+            while (eventType != XmlPullParser.END_DOCUMENT) {
+                switch (eventType) {
+                    case XmlPullParser.START_DOCUMENT:
+                        break;
+
+                    case XmlPullParser.START_TAG:
+                        tag = xpp.getName();
+
+                        if (tag.equals("item")) {
+                            data = new ParkData();
+                        } else if (tag.equals("title")) {
+                            xpp.next();
+                            buffer.append(xpp.getText());
+                            buffer.append("\n");
+                            data.title = xpp.getText().toString();
+                        } else if (tag.equals("address")) {
+                            xpp.next();
+                            buffer.append(xpp.getText());
+                            buffer.append("\n");
+                            data.address = xpp.getText().toString();
+                        } else if (tag.equals("latitude")) {
+                            xpp.next();
+                            buffer.append(xpp.getText());
+                            buffer.append("\n");
+                            data.latitude = xpp.getText().toString();
+                        } else if (tag.equals("longitude")) {
+                            xpp.next();
+                            buffer.append(xpp.getText());
+                            buffer.append("\n");
+                            data.longitude = xpp.getText().toString();
+                        } else if (tag.equals("tel")) {
+                            xpp.next();
+                            buffer.append(xpp.getText());
+                            buffer.append("\n");
+                            data.tel = xpp.getText().toString();
+                        }
+                        break;
+
+                    case XmlPullParser.TEXT:
+                        break;
+
+                    case XmlPullParser.END_TAG:
+                        tag = xpp.getName();
+                        if (tag.equals("item")) {
+                            adapter.add(data);
+                        }
+                        break;
+                }
+                eventType = xpp.next();
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return buffer.toString();
+    }
+
+    private class AsyncTaskGetParkData extends AsyncTask<Void, Integer, Void> {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
         }
 
-        //갱신할 때
         @Override
         protected void onProgressUpdate(Integer... values) {
             super.onProgressUpdate(values);
-        }
 
-        //완료된 후
-        @Override
-        protected void onPostExecute(ArrayList<ParkData> parkDatas) {
-            super.onPostExecute(parkDatas);
-            if (parkDatas == null)
-                return;
-            if (parkDatas.size() == 0)
-                return;
-            for (int i = 0; i < parkDatas.size(); i++){
-                adapter.add(parkDatas.get(i));
-            }
-            adapter.notifyDataSetChanged();
+            ParkHandler parkHandler = new ParkHandler();
+            parkHandler.sendEmptyMessage(0);
         }
 
         @Override
-        protected ArrayList<ParkData> doInBackground(Void... voids) {
-            Boolean flag = null;
-            String responseBody = "false";
-            ArrayList<ParkData> datas = new ArrayList<>();
-            try {
-                OkHttpClient toServer = new OkHttpClient.Builder()
-                        .connectTimeout(60, TimeUnit.SECONDS)
-                        .readTimeout(60, TimeUnit.SECONDS)
-                        .build();
-                RequestBody requestBody = new FormBody.Builder()
-                        .build();
-
-                Request request = new Request.Builder()
-                        .url(parkURL + page)
-                        .get()
-                        .build();
-
-                Response response = toServer.newCall(request).execute();
-                flag = response.isSuccessful();
-
-                int responseCode = response.code();
-                //200 연결잘됨
-
-                Log.d(TAG, "response.code() : " + String.valueOf(responseCode));
-                if (flag) {
-                    responseBody = String.valueOf(response.body().string());
-                    Log.e(TAG, "response.message() : " + response.message()); //응답에 대한 메세지(OK)
-                    Log.e(TAG, "response.body() : " + responseBody);
-                    Log.e(TAG, "flag :" + String.valueOf(flag));
+        protected Void doInBackground(Void... voids) {
+            Thread thread = new Thread() {
+                @Override
+                public void run() {
+                    super.run();
+                    getXmlData();
+                    parkHandler.sendEmptyMessage(0);
                 }
-
-                if (responseBody.equals("false")) {
-                    Log.d(TAG, TaskName + ": 서버 연결 실패");
-                    return null;
-                }
-
-                JSONObject jsonObject = new JSONObject(responseBody);
-                JSONObject pageInfo = jsonObject.getJSONObject("Item");
-                totalPage = pageInfo.getInt("totalCount");
-
-                JSONArray resultList = jsonObject.getJSONArray("item");
-
-                int resultSize = resultList.length();
-                if (resultSize == 0) {
-                    return null;
-                }
-
-                for (int i = 0; i < resultSize; i++){
-                    JSONObject data = resultList.getJSONObject(i);
-                    String title = data.getString("title");
-                    String address = data.getString("address");
-                    String latitude = data.getString("latitude");
-                    String longitude = data.getString("longitude");
-                    String section = data.getString("section");
-                    String tel = data.getString("tel");
-
-                    ParkData parkData = new ParkData(title,address,latitude,longitude,section,tel);
-
-                    datas.add(parkData);
-                }
-
-            } catch (Exception e){
-                Log.d(TAG, TaskName + " :  "+ e.toString());
-                return null;
-            }
-            return datas;
+            };
+            thread.start();
+            return null;
         }
     }
 }

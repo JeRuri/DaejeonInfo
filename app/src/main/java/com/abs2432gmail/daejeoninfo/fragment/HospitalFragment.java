@@ -23,11 +23,7 @@ import com.abs2432gmail.daejeoninfo.R;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
 import okhttp3.FormBody;
@@ -142,7 +138,7 @@ public class HospitalFragment extends Fragment {
         @Override
         public HosRecyclerViewAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
             final View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.hospital_item, parent, false);
-            mapBtn = (Button) view.findViewById(R.id.mapView);
+            mapBtn = (Button) view.findViewById(R.id.hospital_map);
             mapBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {

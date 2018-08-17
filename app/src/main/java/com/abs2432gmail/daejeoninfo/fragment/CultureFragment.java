@@ -86,7 +86,7 @@ public class CultureFragment extends Fragment {
             adapter = new CulRecyclerViewAdapter(list);
             recyclerView.setAdapter(adapter);
         }
-    };
+    }
 
     public class CulRecyclerViewItemData {
         public int drawable;

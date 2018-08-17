@@ -10,13 +10,10 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.view.GestureDetector;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -32,7 +29,6 @@ public class MainActivity extends AppCompatActivity {
     private String TAG= "MainActivity";
         private Context mContext = MainActivity.this;
         private ViewPager viewPager;
-        private Animation anim;
         RecyclerView recyclerView;
 
     @Override
@@ -113,6 +109,7 @@ public class MainActivity extends AppCompatActivity {
         mainRecyclerViewItemDataArrayList.add(new MainRecyclerViewItemData(R.drawable.hospital,"당직병원",HospitalActivity.class));
         mainRecyclerViewItemDataArrayList.add(new MainRecyclerViewItemData(R.drawable.exam,"시험",TestActivity.class));
         mainRecyclerViewItemDataArrayList.add(new MainRecyclerViewItemData(R.drawable.park,"공원",ParkActivity.class));
+        mainRecyclerViewItemDataArrayList.add(new MainRecyclerViewItemData(R.drawable.shopping,"쇼핑",ShoppingActivity.class));
 
         return mainRecyclerViewItemDataArrayList;
     }

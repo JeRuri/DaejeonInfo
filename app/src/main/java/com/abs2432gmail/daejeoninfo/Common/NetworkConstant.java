@@ -16,6 +16,7 @@ public class NetworkConstant {
     public static final String TEST = "http://data.daejeon.go.kr/openapi-data/service/rest/examNotice/examNoticeService/examNotice?ServiceKey=";
     public static final String HOSPITAL = "http://data.daejeon.go.kr/rest/hospital/hospitalDataJsonService.json?ServiceKey=";
     public static final String PARK = "http://data.daejeon.go.kr/openapi-data/service/rest/parkInfo/parkInfoDaejeonService/parkInfoDaejeon?ServiceKey=";
+    public static final String SHOPPING = "http://data.daejeon.go.kr/rest/tourShopping/tourShoppingDataJsonService.json?ServiceKey=";
 }
 
 
