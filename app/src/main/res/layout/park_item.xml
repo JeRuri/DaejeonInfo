@@ -49,7 +49,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:background="@drawable/selector"
-        android:text="마크 이동"
+        android:text="지도 보기"
         android:textStyle="bold"
         android:textColor="@drawable/button_text_color"/>
 

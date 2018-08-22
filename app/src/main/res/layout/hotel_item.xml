@@ -2,42 +2,56 @@
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="150dp"
+    android:orientation="vertical"
+    android:layout_height="wrap_content"
     android:padding="16dp"
     android:gravity="center"
     android:background="@color/white"
-    android:orientation="vertical"
     android:layout_marginBottom="8dp">
 
     <TextView
-        android:id="@+id/testCategory"
+        android:id="@+id/hotel_category"
         android:textSize="17sp"
-        android:text="[타 기관] 시험정보"
+        android:text="[게스트 하우스]"
         android:textColor="@color/black"
         android:textStyle="bold"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:visibility="gone"/>
+        android:layout_height="wrap_content" />
 
     <TextView
-        android:id="@+id/testTitle"
+        android:id="@+id/hotel_name"
         android:textSize="17sp"
-        android:text="서울특별시 종로구 보건소장(개방형직위) 채용 공고"
+        android:text="아인게스트 하우스"
         android:textStyle="bold"
         android:textColor="@color/black"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
+    <LinearLayout
+        android:layout_gravity="left"
+        android:orientation="horizontal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
     <TextView
-        android:id="@+id/opnStrtDtTm"
-        android:text="2018-05-28"
+        android:id="@+id/hotel_telCode"
+        android:text="Tel : 0508"
         android:paddingTop="8dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
     <TextView
-        android:id="@+id/opnEndDtTm"
-        android:text="2018-06-01"
+        android:id="@+id/hotel_telKuk"
+        android:text="-5044"
+        android:paddingTop="8dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
+
+    <TextView
+        android:id="@+id/hotel_telNo"
+        android:text="-2772"
+        android:paddingTop="8dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+    </LinearLayout>
+
 </LinearLayout>

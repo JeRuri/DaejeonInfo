@@ -30,8 +30,6 @@ public class HospitalActivity extends AppCompatActivity {
         viewPager.setAdapter(new TabPagerAdapter(getSupportFragmentManager()));
         tabLayout.getTabAt(0).setText("전체");
         tabLayout.addOnTabSelectedListener(onTabSelectedListener);
-
-
     }
 
     TabLayout.OnTabSelectedListener onTabSelectedListener = new TabLayout.OnTabSelectedListener() {
@@ -53,6 +51,7 @@ public class HospitalActivity extends AppCompatActivity {
 
     public class TabPagerAdapter extends FragmentPagerAdapter {
         int MAX_PAGE = 1;
+
         public TabPagerAdapter(FragmentManager fm){
             super (fm);
         }
