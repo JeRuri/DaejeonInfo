@@ -36,7 +36,9 @@
             android:value="177258b170b8884c372cacc6f1864dd6" />
 
         <activity android:name=".ShoppingActivity" />
-        <activity android:name=".HotelActivity"></activity>
+        <activity android:name=".HotelActivity" />
+        <activity android:name=".CorrectActivity" />
+        <activity android:name=".StoryActivity"></activity>
     </application>
 
 </manifest>

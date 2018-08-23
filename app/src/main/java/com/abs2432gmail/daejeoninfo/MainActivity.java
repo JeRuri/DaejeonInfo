@@ -103,7 +103,8 @@ public class MainActivity extends AppCompatActivity {
 
     private ArrayList<MainRecyclerViewItemData> MakeItemData(){
         ArrayList<MainRecyclerViewItemData> mainRecyclerViewItemDataArrayList= new ArrayList<>();
-        mainRecyclerViewItemDataArrayList.add(new MainRecyclerViewItemData(R.drawable.festival2,"축제",CultureActivity.class));
+        mainRecyclerViewItemDataArrayList.add(new MainRecyclerViewItemData(R.drawable.correct,"시정소식",CorrectActivity.class));
+        mainRecyclerViewItemDataArrayList.add(new MainRecyclerViewItemData(R.drawable.storydaejeon,"스토리대전",StoryActivity.class));
         mainRecyclerViewItemDataArrayList.add(new MainRecyclerViewItemData(R.drawable.news,"뉴스",NewsActivity.class));
         mainRecyclerViewItemDataArrayList.add(new MainRecyclerViewItemData(R.drawable.animal,"유기동물",PetActivity.class));
         mainRecyclerViewItemDataArrayList.add(new MainRecyclerViewItemData(R.drawable.hospital,"당직병원",HospitalActivity.class));

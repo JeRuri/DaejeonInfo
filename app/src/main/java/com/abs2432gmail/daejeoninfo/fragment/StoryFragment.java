@@ -3,8 +3,6 @@ package com.abs2432gmail.daejeoninfo.fragment;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -13,21 +11,20 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.abs2432gmail.daejeoninfo.OkHttp.OkHttpAPICall;
 import com.abs2432gmail.daejeoninfo.OkHttp.OkHttpInitSingletonManager;
 import com.abs2432gmail.daejeoninfo.R;
+import com.bumptech.glide.Glide;
 import com.stanfy.gsonxml.GsonXmlBuilder;
 import com.stanfy.gsonxml.XmlParserCreator;
 
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserFactory;
 
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -35,49 +32,47 @@ import okhttp3.OkHttpClient;
 import okhttp3.Response;
 
 import static com.abs2432gmail.daejeoninfo.Common.NetworkConstant.API_KEY;
-import static com.abs2432gmail.daejeoninfo.Common.NetworkConstant.HOTEL;
+import static com.abs2432gmail.daejeoninfo.Common.NetworkConstant.STORY;
 
-public class HotelFragment extends Fragment {
+public class StoryFragment extends Fragment {
     private RecyclerView recyclerView;
-    private LinearLayoutManager linearLayoutManager;
     private Context mContext;
-    private String HotelURL = HOTEL + API_KEY + "&pageNo=";
+    private LinearLayoutManager linearLayoutManager;
+    private String StoryURL = STORY + API_KEY + "&pageNo=";
     private int page = 1;
     private int totalPage = 2;
-    private HotelRecyclerViewAdapter adapter;
-
-    public HotelFragment() {
-    }
+    public StoryFragment() {}
+    private StoryRecyclerViewAdapter adapter;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_hotel, container, false);
-
+        View view = inflater.inflate(R.layout.fragment_story, container,false);
         mContext = getActivity();
         linearLayoutManager = new LinearLayoutManager(mContext);
 
-        recyclerView = (RecyclerView) view.findViewById(R.id.hotel_recyclerView);
-        recyclerView.setLayoutManager(linearLayoutManager);
-
-        String strtext = getArguments().getString("data");
-        if (strtext.equals("유성구")) {
-            HotelURL = HOTEL + API_KEY + "&dgu=C0604" + "&pageNo=";
-        } else if (strtext.equals("서구")) {
-            HotelURL = HOTEL + API_KEY + "&dgu=C0603" + "&pageNo=";
-        } else if (strtext.equals("대덕구")) {
-            HotelURL = HOTEL + API_KEY + "&dgu=C0601" + "&pageNo=";
-        } else if (strtext.equals("중구")) {
-            HotelURL = HOTEL + API_KEY + "&dgu=C0605" + "&pageNo=";
-        } else if (strtext.equals("동구")) {
-            HotelURL = HOTEL + API_KEY + "&dgu=C0602" + "&pageNo=";
+        String strText = getArguments().getString("data");
+        if (strText.equals("소통하는행정")){
+            StoryURL = STORY + API_KEY + "&categorySeq=291"+"&pageNo=";
+        } else if (strText.equals("희망원도심으로")){
+            StoryURL = STORY + API_KEY + "&categorySeq=292"+"&pageNo=";
+        } else if (strText.equals("함께사회적자본")){
+            StoryURL = STORY + API_KEY + "&categorySeq=293"+"&pageNo=";
+        } else if (strText.equals("경제복지환경")){
+            StoryURL = STORY + API_KEY + "&categorySeq=294"+"&pageNo=";
+        } else if (strText.equals("문화예술관광")){
+            StoryURL = STORY + API_KEY + "&categorySeq=295"+"&pageNo=";
+        } else if (strText.equals("과학도시대전")){
+            StoryURL = STORY + API_KEY + "&categorySeq=296"+"&pageNo=";
         }
 
-        adapter = new HotelRecyclerViewAdapter(new ArrayList<HotelData>());
+        recyclerView = (RecyclerView) view.findViewById(R.id.story_recyclerView);
+        recyclerView.setLayoutManager(linearLayoutManager);
+        adapter = new StoryRecyclerViewAdapter(new ArrayList<StoryData>());
         recyclerView.setAdapter(adapter);
         recyclerView.addOnScrollListener(onScrollListener);
 
-        new AsyncTaskGetHotelData().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+        new AsyncTaskGetStoryData().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
         return view;
     }
 
@@ -87,71 +82,71 @@ public class HotelFragment extends Fragment {
             super.onScrolled(recyclerView, dx, dy);
             int lastVisibleItemPosition = ((LinearLayoutManager) recyclerView.getLayoutManager()).findLastCompletelyVisibleItemPosition();
             int itemTotalCount = recyclerView.getAdapter().getItemCount() - 1;
-            if (lastVisibleItemPosition == itemTotalCount) {
-                if (page == totalPage) {
+            if (lastVisibleItemPosition == itemTotalCount){
+                if (page == totalPage){
                     Toast.makeText(mContext, "마지막입니다...", Toast.LENGTH_SHORT).show();
                     return;
                 }
                 Toast.makeText(mContext, "로딩중...", Toast.LENGTH_SHORT).show();
                 page++;
-                new AsyncTaskGetHotelData().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+                new AsyncTaskGetStoryData().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
             }
         }
     };
+    public class StoryData {
+        String categoryNm, deptNm, regDtTm, title, thumbnail;
 
-    public class HotelData {
-        String dcodeNm, name, telCode, telKuk, telNo;
-
-        public HotelData(String dcodeNm, String name, String telCode, String telKuk, String telNo) {
-            this.dcodeNm = dcodeNm;
-            this.name = name;
-            this.telCode = telCode;
-            this.telKuk = telKuk;
-            this.telNo = telNo;
+        public StoryData(String categoryNm, String deptNm, String regDtTm, String title, String thumbnail){
+            this.categoryNm = categoryNm;
+            this.deptNm = deptNm;
+            this.regDtTm = regDtTm;
+            this.title = title;
+            this.thumbnail = thumbnail;
         }
     }
 
-    private class HotelRecyclerViewAdapter extends RecyclerView.Adapter<HotelRecyclerViewAdapter.ViewHolder> {
-        private ArrayList<HotelData> datas;
+    private class StoryRecyclerViewAdapter extends RecyclerView.Adapter<StoryRecyclerViewAdapter.ViewHolder>{
+        private ArrayList<StoryData> datas;
 
-        public HotelRecyclerViewAdapter(ArrayList<HotelData> datas) {
+        public StoryRecyclerViewAdapter(ArrayList<StoryData> datas){
             this.datas = datas;
         }
 
         public class ViewHolder extends RecyclerView.ViewHolder {
-            HotelData recyclerData;
-            TextView textView1, textView2, textView3, textView4, textView5;
+            StoryData recyclerData;
+            ImageView imageView;
+            TextView textView1, textView2, textView3, textView4;
 
-            public ViewHolder(View itemView) {
+            public ViewHolder(View itemView){
                 super(itemView);
-                textView1 = itemView.findViewById(R.id.hotel_category);
-                textView2 = itemView.findViewById(R.id.hotel_name);
-                textView3 = itemView.findViewById(R.id.hotel_telCode);
-                textView4 = itemView.findViewById(R.id.hotel_telKuk);
-                textView5 = itemView.findViewById(R.id.hotel_telNo);
+                textView1 = itemView.findViewById(R.id.story_category);
+                textView2 = itemView.findViewById(R.id.story_title);
+                imageView = itemView.findViewById(R.id.story_image);
+                textView3 = itemView.findViewById(R.id.story_date);
+                textView4 = itemView.findViewById(R.id.story_dept);
             }
 
-            public void setListData(HotelData data) {
+            public void setListData(StoryData data){
                 this.recyclerData = data;
-                textView1.setText("[" + recyclerData.dcodeNm + "]");
-                textView2.setText(recyclerData.name);
-                textView3.setText("Tel : " + recyclerData.telCode);
-                textView4.setText("-" + recyclerData.telKuk);
-                textView5.setText("-" + recyclerData.telNo);
+                Glide.with(mContext).load("http://www.daejeon.go.kr/"+recyclerData.thumbnail).into(imageView);
+                textView1.setText("["+recyclerData.categoryNm+"]");
+                textView2.setText(recyclerData.title);
+                textView3.setText(recyclerData.regDtTm);
+                textView4.setText(recyclerData.deptNm);
             }
         }
 
         @NonNull
         @Override
-        public HotelRecyclerViewAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.hotel_item, parent, false);
-            HotelRecyclerViewAdapter.ViewHolder viewHolder = new HotelRecyclerViewAdapter.ViewHolder(view);
+        public StoryRecyclerViewAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.story_item, parent, false);
+            StoryRecyclerViewAdapter.ViewHolder viewHolder = new StoryRecyclerViewAdapter.ViewHolder(view);
             return viewHolder;
         }
 
         @Override
-        public void onBindViewHolder(@NonNull HotelRecyclerViewAdapter.ViewHolder viewHolder, int position) {
-            viewHolder.setListData(datas.get(position));
+        public void onBindViewHolder(@NonNull StoryRecyclerViewAdapter.ViewHolder holder, int position) {
+            holder.setListData(datas.get(position));
         }
 
         @Override
@@ -159,7 +154,7 @@ public class HotelFragment extends Fragment {
             return datas.size();
         }
 
-        public void add(HotelData recyclerData) {
+        public void add(StoryData recyclerData){
             datas.add(recyclerData);
         }
     }
@@ -178,14 +173,14 @@ public class HotelFragment extends Fragment {
     private class MyResponse{
         Body body;
         private class Body{
-            List<HotelData> items;
+            List<StoryData> items;
             int numOfRows;
             int pageNo;
             int totalCount;
         }
     }
 
-    private class AsyncTaskGetHotelData extends AsyncTask<Void, Integer, Void> {
+    private class AsyncTaskGetStoryData extends AsyncTask<Void, Integer, Void>{
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
@@ -201,14 +196,14 @@ public class HotelFragment extends Fragment {
             OkHttpClient client = OkHttpInitSingletonManager.getOkHttpClient();
             Response response = null;
 
-            try {
-                response = OkHttpAPICall.GET(client, HotelURL + page);
+            try{
+                response = OkHttpAPICall.GET(client,StoryURL + page);
                 MyResponse myResponse = new GsonXmlBuilder()
                         .setXmlParserCreator(xmlParserCreator)
                         .setPrimitiveArrays(true)
                         .setSkipRoot(true)
                         .create()
-                        .fromXml(response.body().string(),MyResponse.class);
+                        .fromXml(response.body().string(), MyResponse.class);
 
                 int itemSize = myResponse.body.items.size();
                 totalPage = myResponse.body.totalCount/10 + 1;
@@ -216,12 +211,10 @@ public class HotelFragment extends Fragment {
                 for (int i = 0; i < itemSize; i++) {
                     adapter.add(myResponse.body.items.get(i));
                 }
-            } catch (Exception e){
+            }catch (Exception e){
                 e.printStackTrace();
             }
             return null;
         }
     }
 }
-
-

@@ -3,14 +3,12 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".fragment.CultureFragment">
+    tools:context=".fragment.CorrectFragment">
 
     <android.support.v7.widget.RecyclerView
-        android:id="@+id/recyclerView2"
+        android:id="@+id/correct_recyclerView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        tools:layoutManager="android.support.v7.widget.LinearLayoutManager"
-        tools:listitem="@layout/news_item" >
-    </android.support.v7.widget.RecyclerView>
+        tools:listitem="@layout/correct_item"/>
 
 </FrameLayout>

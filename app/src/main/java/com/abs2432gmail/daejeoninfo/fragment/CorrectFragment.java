@@ -1,10 +1,9 @@
 package com.abs2432gmail.daejeoninfo.fragment;
 
+
 import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -25,9 +24,6 @@ import com.stanfy.gsonxml.XmlParserCreator;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserFactory;
 
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -35,49 +31,32 @@ import okhttp3.OkHttpClient;
 import okhttp3.Response;
 
 import static com.abs2432gmail.daejeoninfo.Common.NetworkConstant.API_KEY;
-import static com.abs2432gmail.daejeoninfo.Common.NetworkConstant.HOTEL;
+import static com.abs2432gmail.daejeoninfo.Common.NetworkConstant.CORRECT;
 
-public class HotelFragment extends Fragment {
+public class CorrectFragment extends Fragment {
     private RecyclerView recyclerView;
     private LinearLayoutManager linearLayoutManager;
     private Context mContext;
-    private String HotelURL = HOTEL + API_KEY + "&pageNo=";
+    private String correctURL = CORRECT + API_KEY + "&pageNo=";
     private int page = 1;
     private int totalPage = 2;
-    private HotelRecyclerViewAdapter adapter;
+    private CorrectRecyclerViewAdapter adapter;
 
-    public HotelFragment() {
-    }
+    public CorrectFragment(){}
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_hotel, container, false);
-
+        View view = inflater.inflate(R.layout.fragment_correct, container, false);
         mContext = getActivity();
         linearLayoutManager = new LinearLayoutManager(mContext);
 
-        recyclerView = (RecyclerView) view.findViewById(R.id.hotel_recyclerView);
+        recyclerView = (RecyclerView) view.findViewById(R.id.correct_recyclerView);
         recyclerView.setLayoutManager(linearLayoutManager);
-
-        String strtext = getArguments().getString("data");
-        if (strtext.equals("유성구")) {
-            HotelURL = HOTEL + API_KEY + "&dgu=C0604" + "&pageNo=";
-        } else if (strtext.equals("서구")) {
-            HotelURL = HOTEL + API_KEY + "&dgu=C0603" + "&pageNo=";
-        } else if (strtext.equals("대덕구")) {
-            HotelURL = HOTEL + API_KEY + "&dgu=C0601" + "&pageNo=";
-        } else if (strtext.equals("중구")) {
-            HotelURL = HOTEL + API_KEY + "&dgu=C0605" + "&pageNo=";
-        } else if (strtext.equals("동구")) {
-            HotelURL = HOTEL + API_KEY + "&dgu=C0602" + "&pageNo=";
-        }
-
-        adapter = new HotelRecyclerViewAdapter(new ArrayList<HotelData>());
+        adapter = new CorrectRecyclerViewAdapter(new ArrayList<CorrectData>());
         recyclerView.setAdapter(adapter);
         recyclerView.addOnScrollListener(onScrollListener);
-
-        new AsyncTaskGetHotelData().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+        new AsyncTaskGetCorrectData().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
         return view;
     }
 
@@ -85,73 +64,72 @@ public class HotelFragment extends Fragment {
         @Override
         public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
             super.onScrolled(recyclerView, dx, dy);
-            int lastVisibleItemPosition = ((LinearLayoutManager) recyclerView.getLayoutManager()).findLastCompletelyVisibleItemPosition();
+            int lastVisibleItemPosition = ((LinearLayoutManager)recyclerView.getLayoutManager()).findLastCompletelyVisibleItemPosition();
             int itemTotalCount = recyclerView.getAdapter().getItemCount() - 1;
-            if (lastVisibleItemPosition == itemTotalCount) {
-                if (page == totalPage) {
+            if (lastVisibleItemPosition == itemTotalCount){
+                if (page == totalPage){
                     Toast.makeText(mContext, "마지막입니다...", Toast.LENGTH_SHORT).show();
                     return;
                 }
                 Toast.makeText(mContext, "로딩중...", Toast.LENGTH_SHORT).show();
                 page++;
-                new AsyncTaskGetHotelData().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+                new AsyncTaskGetCorrectData().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
             }
         }
     };
+    public class CorrectData{
+        String deptNm, title, regDtTm, tel, atchFileCnt;
 
-    public class HotelData {
-        String dcodeNm, name, telCode, telKuk, telNo;
-
-        public HotelData(String dcodeNm, String name, String telCode, String telKuk, String telNo) {
-            this.dcodeNm = dcodeNm;
-            this.name = name;
-            this.telCode = telCode;
-            this.telKuk = telKuk;
-            this.telNo = telNo;
+        public CorrectData(String deptNm, String title, String regDtTm, String tel, String atchFileCnt){
+            this.deptNm = deptNm;
+            this.title = title;
+            this.regDtTm = regDtTm;
+            this.tel = tel;
+            this.atchFileCnt = atchFileCnt;
         }
     }
 
-    private class HotelRecyclerViewAdapter extends RecyclerView.Adapter<HotelRecyclerViewAdapter.ViewHolder> {
-        private ArrayList<HotelData> datas;
+    private class CorrectRecyclerViewAdapter extends RecyclerView.Adapter<CorrectRecyclerViewAdapter.ViewHolder> {
+        private ArrayList<CorrectData> datas;
 
-        public HotelRecyclerViewAdapter(ArrayList<HotelData> datas) {
+        public CorrectRecyclerViewAdapter(ArrayList<CorrectData> datas){
             this.datas = datas;
         }
 
         public class ViewHolder extends RecyclerView.ViewHolder {
-            HotelData recyclerData;
+            CorrectData recyclerData;
             TextView textView1, textView2, textView3, textView4, textView5;
 
-            public ViewHolder(View itemView) {
+            public ViewHolder(View itemView){
                 super(itemView);
-                textView1 = itemView.findViewById(R.id.hotel_category);
-                textView2 = itemView.findViewById(R.id.hotel_name);
-                textView3 = itemView.findViewById(R.id.hotel_telCode);
-                textView4 = itemView.findViewById(R.id.hotel_telKuk);
-                textView5 = itemView.findViewById(R.id.hotel_telNo);
+                textView1 = itemView.findViewById(R.id.correct_dept);
+                textView2 = itemView.findViewById(R.id.correct_title);
+                textView3 = itemView.findViewById(R.id.correct_Date);
+                textView4 = itemView.findViewById(R.id.correct_Tel);
+                textView5 = itemView.findViewById(R.id.correct_atch);
             }
 
-            public void setListData(HotelData data) {
+            public void setListData(CorrectData data){
                 this.recyclerData = data;
-                textView1.setText("[" + recyclerData.dcodeNm + "]");
-                textView2.setText(recyclerData.name);
-                textView3.setText("Tel : " + recyclerData.telCode);
-                textView4.setText("-" + recyclerData.telKuk);
-                textView5.setText("-" + recyclerData.telNo);
+                textView1.setText("["+recyclerData.deptNm+"]");
+                textView2.setText(recyclerData.title);
+                textView3.setText("공고일 : "+recyclerData.regDtTm);
+                textView4.setText("Tel : "+recyclerData.tel);
+                textView5.setText("첨부파일 "+recyclerData.atchFileCnt+"개");
             }
         }
 
         @NonNull
         @Override
-        public HotelRecyclerViewAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.hotel_item, parent, false);
-            HotelRecyclerViewAdapter.ViewHolder viewHolder = new HotelRecyclerViewAdapter.ViewHolder(view);
+        public CorrectRecyclerViewAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.correct_item,parent,false);
+            CorrectRecyclerViewAdapter.ViewHolder  viewHolder = new CorrectRecyclerViewAdapter.ViewHolder(view);
             return viewHolder;
         }
 
         @Override
-        public void onBindViewHolder(@NonNull HotelRecyclerViewAdapter.ViewHolder viewHolder, int position) {
-            viewHolder.setListData(datas.get(position));
+        public void onBindViewHolder(@NonNull CorrectRecyclerViewAdapter.ViewHolder holder, int position) {
+            holder.setListData(datas.get(position));
         }
 
         @Override
@@ -159,7 +137,7 @@ public class HotelFragment extends Fragment {
             return datas.size();
         }
 
-        public void add(HotelData recyclerData) {
+        public void add(CorrectData recyclerData){
             datas.add(recyclerData);
         }
     }
@@ -178,14 +156,14 @@ public class HotelFragment extends Fragment {
     private class MyResponse{
         Body body;
         private class Body{
-            List<HotelData> items;
-            int numOfRows;
+            List<CorrectData> items;
+            int numberOfRows;
             int pageNo;
             int totalCount;
         }
     }
 
-    private class AsyncTaskGetHotelData extends AsyncTask<Void, Integer, Void> {
+    private class AsyncTaskGetCorrectData extends AsyncTask<Void, Integer, Void>{
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
@@ -193,7 +171,7 @@ public class HotelFragment extends Fragment {
 
         @Override
         protected void onPostExecute(Void aVoid) {
-            adapter.notifyDataSetChanged();
+           adapter.notifyDataSetChanged();
         }
 
         @Override
@@ -202,26 +180,23 @@ public class HotelFragment extends Fragment {
             Response response = null;
 
             try {
-                response = OkHttpAPICall.GET(client, HotelURL + page);
+                response = OkHttpAPICall.GET(client, correctURL + page);
                 MyResponse myResponse = new GsonXmlBuilder()
                         .setXmlParserCreator(xmlParserCreator)
                         .setPrimitiveArrays(true)
                         .setSkipRoot(true)
                         .create()
-                        .fromXml(response.body().string(),MyResponse.class);
+                        .fromXml(response.body().string(), MyResponse.class);
 
                 int itemSize = myResponse.body.items.size();
                 totalPage = myResponse.body.totalCount/10 + 1;
-
-                for (int i = 0; i < itemSize; i++) {
+                for (int i = 0; i < itemSize; i++){
                     adapter.add(myResponse.body.items.get(i));
                 }
-            } catch (Exception e){
+            }catch (Exception e){
                 e.printStackTrace();
             }
             return null;
         }
     }
 }
-
-
